@@ -18,7 +18,7 @@ const MenuLink = ({
 }: IMenuLink) => {
   const pathname = usePathname();
 
-  const active = "text-primary";
+  const active = "text-primary"; 
 
   return (
     <Link
