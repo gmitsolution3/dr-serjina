@@ -1,12 +1,11 @@
-import type { ReactNode } from "React";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface IMenuLink {
   to: string;
   className: string;
-  children: ReactNode;
+  children: React.ReactNode;
   onClick?: () => void;
 }
 
@@ -18,7 +17,7 @@ const MenuLink = ({
 }: IMenuLink) => {
   const pathname = usePathname();
 
-  const active = "text-primary"; 
+  const active = "text-primary";
 
   return (
     <Link
