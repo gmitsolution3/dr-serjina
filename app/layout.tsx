@@ -26,7 +26,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dr. SK. Serjina Anwar",
+  title: "Dr. SK. SERJINA ANWAR",
   description:
     "Child specialist, Paediatric Neurologiest, Neuro Development Specialist, Neurophysiology.",
 };
