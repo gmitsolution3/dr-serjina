@@ -1,5 +1,4 @@
-// import { Menu, Phone, Clock, Hospital, Brain } from "lucide-react";
-// import DoctorImage from "@/assets/doctorImage.png";
+// components/HeaderSideMenu.tsx
 import {
   Sheet,
   SheetContent,
@@ -8,7 +7,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { sideMenuData } from "@/data/sidemenu.data";
 import {
   AiBrain01Icon,
   Clock01Icon,
@@ -34,134 +32,164 @@ export default function HeaderSideMenu() {
         <SheetHeader>
           {/* Doctor Profile */}
           <div className="flex flex-col items-center text-center mt-8">
-            {/* <img
-              src={DoctorImage}
-              alt={sideMenuData.doctor.name}
-              className="w-28 h-36 object-cover rounded-xl shadow mb-4"
-            /> */}
-
             <SheetTitle className="text-white text-2xl">
-              {sideMenuData.doctor.name}
+              ডাঃ এস. কে. সারজিনা আনোয়ার
             </SheetTitle>
 
             <p className="mt-2 text-sm font-light text-gray-300">
-              {sideMenuData.doctor.title}
+              শিশু রোগ বিশেষজ্ঞ ও শিশু নিউরোলজিস্ট
             </p>
           </div>
 
           <SheetDescription>
             <div className="space-y-6 mt-8">
-              {/* Centers */}
+              {/* Centers / Hospitals */}
               <div>
                 <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
-                  <HugeiconsIcon
-                    icon={Hospital02Icon}
-                    size={24}
-                    color="currentColor"
-                    strokeWidth={1.5}
-                  />
+                  <span>
+                    <HugeiconsIcon
+                      icon={Hospital02Icon}
+                      size={20}
+                      strokeWidth={1.5}
+                      className="text-primary"
+                    />
+                  </span>
                   চেম্বার / হাসপাতাল
                 </h3>
 
-                <div className="space-y-3 whitespace-pre">
-                  {sideMenuData.centers.map((center, idx) => (
-                    <div key={idx}>
-                      <p className="font-medium text-sm">
-                        {center.name}
-                      </p>
-                      <p className="text-xs text-gray-300">
-                        {center.address}
-                      </p>
-                      p
-                    </div>
-                  ))}
+                <div className="space-y-3">
+                  {/* Kurmitola Hospital */}
+                  <div>
+                    <p className="font-medium text-sm">
+                      কুর্মিটোলা জেনারেল হাসপাতাল
+                    </p>
+                    <p className="text-xs text-gray-300">ঢাকা</p>
+                  </div>
+
+                  {/* York Hospital */}
+                  <div>
+                    <p className="font-medium text-sm">
+                      ইয়র্ক হাসপাতাল
+                    </p>
+                    <p className="text-xs text-gray-300">
+                      বাড়ি ১২ ও ১৩, সড়ক নংঃ ২২, ব্লকঃ K, বনানী, ঢাকা
+                      ১২১৩।
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Phone */}
+              {/* Contact Numbers */}
               <div>
                 <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
-                  <HugeiconsIcon
-                    icon={TelephoneIcon}
-                    size={24}
-                    color="currentColor"
-                    strokeWidth={1.5}
-                  />
+                  <span>
+                    <HugeiconsIcon
+                      icon={TelephoneIcon}
+                      size={20}
+                      strokeWidth={1.5}
+                      className="text-primary"
+                    />
+                  </span>
                   যোগাযোগ
                 </h3>
 
-                <div className="text-sm text-gray-300 flex flex-col gap-1">
-                  {sideMenuData.phone.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
+                <div className="text-sm text-gray-300 flex flex-col gap-2">
+                  <a
+                    href="tel:+8801339511108"
+                    className="hover:text-white transition-colors"
+                  >
+                    +৮৮০ ১৩৩৯-৫১১১০৮
+                  </a>
+                  <a
+                    href="tel:+8801992222555"
+                    className="hover:text-white transition-colors"
+                  >
+                    +৮৮০ ১৯৯২-২২২৫৫৫
+                  </a>
+                  <a
+                    href="tel:+8801992222777"
+                    className="hover:text-white transition-colors"
+                  >
+                    +৮৮০ ১৯৯২-২২২৭৭৭
+                  </a>
                 </div>
               </div>
 
-              {/* Timing */}
+              {/* Chamber Time */}
               <div>
                 <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
-                  <HugeiconsIcon
-                    icon={Clock01Icon}
-                    size={24}
-                    color="currentColor"
-                    strokeWidth={1.5}
-                  />
+                  <span>
+                    <HugeiconsIcon
+                      icon={Clock01Icon}
+                      size={20}
+                      strokeWidth={1.5}
+                      className="text-primary"
+                    />
+                  </span>
                   চেম্বার সময়
                 </h3>
 
                 <p className="text-sm text-gray-300">
-                  {sideMenuData.timing}
+                  শনিবার, সোম, বুধবার | সন্ধ্যা ৭টা – রাত ৯টা
                 </p>
               </div>
 
-              {/* Appointment */}
+              {/* Appointment Time */}
               <div>
-                <h3 className="font-semibold text-white mb-3">
-                  🕐 অ্যাপয়েন্টমেন্ট সময়
+                <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
+                  <span>📅</span>
+                  অ্যাপয়েন্টমেন্ট সময়
                 </h3>
                 <p className="text-sm text-gray-300">
-                  {sideMenuData.appointment}
+                  সকাল ১১টা – রাত ১১টা
                 </p>
               </div>
 
-              {/* Online */}
+              {/* Online Consultation */}
               <div>
-                <h3 className="font-semibold text-white mb-3">
-                  💻 অনলাইন কন্সাল্টেন্সি
+                <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
+                  <span>💻</span>
+                  অনলাইন কন্সাল্টেন্সি
                 </h3>
                 <p className="text-sm text-gray-300">
-                  {sideMenuData.appointment}
+                  সকাল ১১টা – রাত ১১টা
                 </p>
               </div>
 
               {/* Specialties */}
               <div>
                 <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
-                  {/* <Brain className="w-4 h-4 text-primary" /> */}
-                  <HugeiconsIcon
-                    icon={AiBrain01Icon}
-                    size={24}
-                    color="currentColor"
-                    strokeWidth={1.5}
-                  />
+                  <span>
+                    <HugeiconsIcon
+                      icon={AiBrain01Icon}
+                      size={20}
+                      strokeWidth={1.5}
+                      className="text-primary"
+                    />
+                  </span>
                   বিশেষ দক্ষতা
                 </h3>
 
-                <ul className="text-sm text-gray-300 list-disc pl-5 space-y-1">
-                  {sideMenuData.specialties.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
+                <ul className="text-sm text-gray-300 list-disc pl-5 space-y-2">
+                  <li>মৃগী ও খিঁচুনি রোগ</li>
+                  <li>অটিজম ও এডিএইচডি</li>
+                  <li>সেরিব্রাল পালসি</li>
+                  <li>শিশু নিউরোলজি</li>
+                  <li>ইইজি (EEG)</li>
                 </ul>
               </div>
 
-              {/* CTA */}
+              {/* Call to Action */}
               <div className="pt-4 border-t border-white/10">
                 <p className="text-center text-sm text-gray-300 mb-2">
                   অ্যাপয়েন্টমেন্টের জন্য কল করুন
                 </p>
-                <p className="text-center font-semibold text-lg text-white">
-                  {sideMenuData.phone[0]}
-                </p>
+                <a
+                  href="tel:+8801339511108"
+                  className="text-center font-semibold text-lg text-white hover:text-primary transition-colors block"
+                >
+                  +৮৮০ ১৩৩৯-৫১১১০৮
+                </a>
               </div>
             </div>
           </SheetDescription>
