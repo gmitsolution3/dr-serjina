@@ -6,6 +6,7 @@ import {
   Noto_Sans_Bengali,
 } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/Header";
 
 const notoBengali = Noto_Sans_Bengali({
   subsets: ["bengali"],
@@ -45,6 +46,7 @@ export default function RootLayout({
         notoBengali.variable,
       )}
     >
+      <Header />
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
