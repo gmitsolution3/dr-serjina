@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import Banner from "@/components/Banner";
 
 export default function Home() {
   return (
-    <main>
-      <Button>Hello world হেল্লো </Button>
-    </main>
+    <>
+      <Banner />
+    </>
   );
 }

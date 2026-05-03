@@ -32,6 +32,11 @@ export default function HeaderSideMenu() {
         <SheetHeader>
           {/* Doctor Profile */}
           <div className="flex flex-col items-center text-center mt-8">
+            <img
+              src="/doctorImage.png"
+              alt="hello world"
+              className="w-28 h-36 object-cover rounded-xl shadow mb-4"
+            />
             <SheetTitle className="text-white text-2xl">
               ডাঃ এস. কে. সারজিনা আনোয়ার
             </SheetTitle>
