@@ -1,5 +1,7 @@
 import AppointmentBook from "@/components/AppointmentBook";
 import Banner from "@/components/Banner";
+import BookingProcess from "@/components/BookingProcess";
+import CallToAction from "@/components/CallToAction";
 import SpecializedServices from "@/components/SpecializedServices";
 import Stats from "@/components/Stats";
 import TreatmentSpecialities from "@/components/TreatmentSpecialities";
@@ -14,6 +16,8 @@ export default function Home() {
       <WhyChooseUs />
       <Stats />
       <SpecializedServices />
+      <CallToAction />
+      <BookingProcess />
     </>
   );
 }
