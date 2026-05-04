@@ -25,13 +25,14 @@ export default function Header() {
           {/* Logo */}
           <div className="w-full lg:w-auto flex justify-between items-center">
             <Link href="/" className="font-bold text-xl lg:text-2xl">
-              {/* <Image
+              <Image
                 height={500}
                 width={500}
                 src="/logo.png"
                 alt="Logo"
-              /> */}
-              Dr. SK. SERJINA ANWAR
+                className="w-32"
+              />
+              {/* Dr. SK. SERJINA ANWAR */}
             </Link>
 
             {/* Mobile Menu Toggle */}

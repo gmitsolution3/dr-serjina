@@ -21,10 +21,8 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  courseManagement,
   mainMenuItems,
   settingsItems,
-  userManagement,
 } from "./menuitems";
 
 export function DashboardSidebar() {
@@ -51,16 +49,13 @@ export function DashboardSidebar() {
               width={200}
               height={200}
               priority
-              className="w-12"
+              className="w-18"
             />
 
             {!isCollapsed && (
               <div className="flex flex-col">
-                <span className="text-lg font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
-                  AI Learning
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  Academy
+                <span className="text-primary font-semibold">
+                  Doctor Panel
                 </span>
               </div>
             )}
@@ -82,68 +77,7 @@ export function DashboardSidebar() {
                     <NavLink
                       href={item.url}
                       exact={item.url === "/admin-dashboard"}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    >
-                      <HugeiconsIcon
-                        icon={item.icon}
-                        size={20}
-                        color="currentColor"
-                        strokeWidth={1.5}
-                        className="h-5 w-5 shrink-0"
-                      />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Course Management */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {!isCollapsed && "Course Management"}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {courseManagement.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <NavLink
-                      href={item.url}
-                      exact={item.url === "/admin-dashboard"}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    >
-                      <HugeiconsIcon
-                        icon={item.icon}
-                        size={20}
-                        color="currentColor"
-                        strokeWidth={1.5}
-                      />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* User Management */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {!isCollapsed && "User Management"}
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {userManagement.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <NavLink
-                      href={item.url}
-                      exact={item.url === "/admin-dashboard"}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-primary/10 hover:text-primary"
                     >
                       <HugeiconsIcon
                         icon={item.icon}
@@ -173,7 +107,7 @@ export function DashboardSidebar() {
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <NavLink
                       href={item.url}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-primary/10 hover:text-primary"
                     >
                       <HugeiconsIcon
                         icon={item.icon}
