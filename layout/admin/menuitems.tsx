@@ -23,8 +23,8 @@ export const mainMenuItems = [
     icon: Calendar02Icon,
   },
   {
-    title: "Specialities",
-    url: dashboardMenu.defineUrl("/specialities"),
+    title: "Experties",
+    url: dashboardMenu.defineUrl("/experties"),
     icon: TickDouble02Icon,
   },
   {

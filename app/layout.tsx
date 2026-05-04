@@ -6,6 +6,7 @@ import {
   Geist_Mono,
   Noto_Sans_Bengali,
 } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const notoBengali = Noto_Sans_Bengali({
@@ -48,7 +49,10 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          {children}
+          <Toaster />
+        </TooltipProvider>
       </body>
     </html>
   );
