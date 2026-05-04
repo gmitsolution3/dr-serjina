@@ -43,7 +43,7 @@ import ExpertiesLoader from "@/components/admin/experties/ExpertiesLoader";
 import ExpertiesEmpty from "@/components/admin/experties/ExpertiesEmpty";
 import ExpertiesError from "@/components/admin/experties/ExpertiesError";
 import ExpertiesActionCell from "@/components/admin/experties/ExpertiesActionCell";
-// import CreateExpertiesModal from "@/components/admin/experties/modals/CreateExpertiesModal";
+import CreateExpertiesModal from "@/components/admin/experties/CreateExpertiesModal";
 import { IExperties, IMeta } from "@/types";
 
 export default function ExpertiesPage() {
@@ -72,9 +72,9 @@ export default function ExpertiesPage() {
   }, [globalFilter]);
 
   // Client-side filtering for search (since search is likely not server-side)
-  const filteredSpecialities = useMemo(
-  () => expertiesList.filter((speciality) =>
-    speciality.name.toLowerCase().includes(globalFilter.toLowerCase())
+  const filteredExperties = useMemo(
+  () => expertiesList.filter((experties) =>
+    experties.name.toLowerCase().includes(globalFilter.toLowerCase())
   ),
   [expertiesList, globalFilter],
 );
@@ -139,7 +139,7 @@ export default function ExpertiesPage() {
   ];
 
   const table = useReactTable({
-    data: filteredSpecialities,
+    data: filteredExperties,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -174,11 +174,11 @@ export default function ExpertiesPage() {
           refetch={refetch}
           onOpenChange={setShowCreateModal}
         />
-        {/* <CreateExpertiesModal
+        <CreateExpertiesModal
           open={showCreateModal}
           onOpenChange={setShowCreateModal}
           onSuccess={refetch}
-        /> */}
+        />
       </>
     );
   }
@@ -190,7 +190,7 @@ export default function ExpertiesPage() {
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <CardTitle className="text-2xl">
-                Specialities Management
+                Experties Management
               </CardTitle>
               <div className="flex items-center gap-2">
                 <Button
@@ -210,7 +210,7 @@ export default function ExpertiesPage() {
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="flex-1">
                 <Input
-                  placeholder="Search specialities..."
+                  placeholder="Search Experties..."
                   value={globalFilter ?? ""}
                   onChange={(e) => setGlobalFilter(e.target.value)}
                   className="w-full p-5"
@@ -221,7 +221,7 @@ export default function ExpertiesPage() {
                 onClick={() => setShowCreateModal(true)}
               >
                 <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />
-                Create New Speciality
+                Create New Experties
               </Button>
             </div>
 
@@ -266,7 +266,7 @@ export default function ExpertiesPage() {
               <div className="text-sm text-muted-foreground">
                 Showing {(page - 1) * limit + 1} to{" "}
                 {Math.min(page * limit, meta.total)} of {meta.total}{" "}
-                specialities
+                experties
               </div>
               <div className="flex items-center space-x-2">
                 <Button
@@ -310,11 +310,11 @@ export default function ExpertiesPage() {
         </Card>
       </div>
 
-      {/* <CreateExpertiesModal
+      <CreateExpertiesModal
         open={showCreateModal}
         onOpenChange={setShowCreateModal}
         onSuccess={refetch}
-      /> */}
+      />
     </>
   );
 }

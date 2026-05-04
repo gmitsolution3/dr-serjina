@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,10 +8,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useDelete } from "@/hooks/swr/useDelete";
-import { notify } from "@/utils/notify";
-import { Button } from "@/components/ui/button";
-import { Dispatch, SetStateAction } from "react";
 import { IExperties } from "@/types";
+import { notify } from "@/utils/notify";
+import { Dispatch, SetStateAction } from "react";
+import { mutate } from "swr";
 
 interface DeleteExpertiesModalProps {
   experties: IExperties;
@@ -24,10 +25,7 @@ export default function DeleteExpertiesModal({
   onOpenChange,
 }: DeleteExpertiesModalProps) {
   const { mutate: deleteExperty, isLoading } = useDelete(
-    `/treatment-experties/delete-experty`,
-    {
-      revalidateKey: "/treatment-experties",
-    },
+    `/treatment-experties`,
   );
 
   const handleDelete = async (experties: IExperties) => {
@@ -36,6 +34,24 @@ export default function DeleteExpertiesModal({
 
       if (res?.success) {
         notify.success("Experty deleted successfully");
+        mutate(
+          (key) => {
+            // SWR cache keys with params are often arrays
+            if (Array.isArray(key)) {
+              return (
+                typeof key[0] === "string" &&
+                key[0].startsWith("/treatment-experties")
+              );
+            }
+            return (
+              typeof key === "string" &&
+              key.startsWith("/treatment-experties")
+            );
+          },
+          undefined,
+          { revalidate: true },
+        );
+
         onOpenChange(false);
       } else {
         notify.error(res?.message || "Failed to delete experty");

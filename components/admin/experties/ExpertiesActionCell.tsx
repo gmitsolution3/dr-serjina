@@ -1,5 +1,8 @@
 // components/AdminDashboard/actionCells/ExpertiesManagementActionCell.tsx
-import { useState } from "react";
+import DeleteExpertiesModal from "@/components/admin/experties/DeleteExpertiesModal";
+import EditExpertiesModal from "@/components/admin/experties/EditExpertiesModal";
+import ViewExpertiesModal from "@/components/admin/experties/ViewExpertiesModal";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,19 +10,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { ViewIcon, EditIcon, MoreHorizontalIcon, DeleteIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import ViewExpertiesModal from "@/components/admin/experties/ViewExpertiesModal";
-// import EditExpertiesModal from "@/components/admin/experties/";
-import DeleteExpertiesModal from "@/components/admin/experties/DeleteExpertiesModal";
 import { IExperties } from "@/types";
+import {
+  DeleteIcon,
+  EditIcon,
+  MoreHorizontalIcon,
+  ViewIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useState } from "react";
 
 interface ExpertiesManagementActionCellProps {
   experties: IExperties;
 }
 
-export default function ExpertiesActionCell({ 
+export default function ExpertiesActionCell({
   experties,
 }: ExpertiesManagementActionCellProps) {
   const [showViewModal, setShowViewModal] = useState(false);
@@ -32,7 +37,10 @@ export default function ExpertiesActionCell({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
-            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+            <HugeiconsIcon
+              icon={MoreHorizontalIcon}
+              className="h-4 w-4"
+            />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -49,7 +57,10 @@ export default function ExpertiesActionCell({
             className="text-red-600 focus:text-red-600"
             onClick={() => setShowDeleteDialog(true)}
           >
-            <HugeiconsIcon icon={DeleteIcon} className="mr-2 h-4 w-4" />
+            <HugeiconsIcon
+              icon={DeleteIcon}
+              className="mr-2 h-4 w-4"
+            />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -67,15 +78,11 @@ export default function ExpertiesActionCell({
         onOpenChange={setShowViewModal}
       />
 
-      {/* <EditExpertiesModal
+      <EditExpertiesModal
         experties={experties}
         open={showEditModal}
         onOpenChange={setShowEditModal}
-        onSuccess={() => {
-          setShowEditModal(false);
-          onSuccess?.();
-        }}
-      /> */}
+      />
     </>
   );
 }
