@@ -55,7 +55,7 @@ Child specialist, Paediatric Neurologiest, Neuro Development Specialist, Neuroph
                   className="bg-[#423D96] hover:bg-white hover:text-black transition-all duration-300 flex items-center gap-2"
                   asChild
                 >
-                  <Link href="/doctor-profile">
+                  <Link href="/profile-detail">
                     বিস্তারিত{" "}
                     <HugeiconsIcon
                       icon={ArrowRight02Icon}

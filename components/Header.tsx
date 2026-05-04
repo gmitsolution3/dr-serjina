@@ -105,7 +105,7 @@ export default function Header() {
         </div>
 
         {/* Desktop Navigation */}
-        {pathname !== "/doctor-profile" && (
+        {pathname !== "/profile-detail" && (
           <nav className="hidden lg:block mt-8 border-t border-[#EAEAEA] pt-6">
             <div className="flex items-center justify-between">
               <ul className="flex items-center justify-start space-x-8 uppercase">

@@ -419,7 +419,7 @@ export default function TreatmentSpecialities() {
                 className="bg-primary hover:bg-[#10172E]"
                 asChild
               >
-                <Link href="/doctor-profile">বিস্তারিত জানতে</Link>
+                <Link href="/profile-detail">বিস্তারিত জানতে</Link>
               </Button>
             </div>
           </div>
