@@ -25,14 +25,7 @@ import { mutate } from "swr";
 import { z } from "zod";
 import { ImageUploader } from "@/components/ImageUploader";
 
-interface IServiceType {
-  _id: string;
-  name: string;
-  imageUrl: string;
-  public_id?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { IService } from "@/types";
 
 // Define the form schema with zod
 const editServiceSchema = z.object({
@@ -49,7 +42,7 @@ const editServiceSchema = z.object({
 type EditServiceFormValues = z.infer<typeof editServiceSchema>;
 
 interface EditServiceModalProps {
-  service: IServiceType;
+  service: IService;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

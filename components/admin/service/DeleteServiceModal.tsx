@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { useDelete } from "@/hooks/swr/useDelete";
 import { IService } from "@/types";
+import { deleteImage } from "@/utils";
 import { notify } from "@/utils/notify";
 import { Dispatch, SetStateAction } from "react";
 import { mutate } from "swr";
@@ -33,6 +34,7 @@ export default function DeleteServiceModal({
       const res = await deleteService(service._id);
 
       if (res?.success) {
+        deleteImage(service.public_id);
         notify.success("Service deleted successfully");
         mutate(
           (key) => {
