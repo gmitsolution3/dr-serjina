@@ -1,4 +1,5 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
+import AuthProvider from "@/lib/auth-provider";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import {
@@ -7,6 +8,8 @@ import {
   Noto_Sans_Bengali,
 } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const notoBengali = Noto_Sans_Bengali({
@@ -31,11 +34,15 @@ export const metadata: Metadata = {
     "Child specialist, Paediatric Neurologiest, Neuro Development Specialist, Neurophysiology.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return (
     <html
       lang="en"
@@ -49,10 +56,12 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>
-          {children}
-          <Toaster />
-        </TooltipProvider>
+        <AuthProvider session={session}>
+          <TooltipProvider>
+            {children}
+            <Toaster />
+          </TooltipProvider>
+        </AuthProvider>
       </body>
     </html>
   );
