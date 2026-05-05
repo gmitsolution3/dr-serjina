@@ -1,23 +1,31 @@
-// components/BookingProcess.tsx
-import { 
-  TelephoneIcon,
+import { getProfileData } from "@/services/getProfileData";
+import { IProfile } from "@/types";
+import {
+  Calendar01Icon,
+  Clock01Icon,
   File01Icon,
+  InjectionIcon,
+  LaptopIcon,
+  StethoscopeIcon,
+  TelephoneIcon,
   UserGroupIcon,
   UserIcon,
-  InjectionIcon,
-  Clock01Icon,
-  Calendar01Icon,
-  StethoscopeIcon,
-  LaptopIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
-export default function BookingProcess() {
+export default async function BookingProcess() {
+  const res = await getProfileData();
+
+  const profileData: IProfile = res?.data || {};
+
+  // Get primary chamber info
+  const primaryChamber = profileData?.chamber?.find(c => c.isPrimary);
+  
+  // Get contact numbers
+  const contactNumbers = profileData?.contactNumbers || [];
+
   return (
-    <section
-      id="blog"
-      className="py-10 md:py-16 lg:py-20 bg-gray-50"
-    >
+    <section id="blog" className="py-10 md:py-16 lg:py-20 bg-gray-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left side - Process Steps */}
@@ -153,7 +161,10 @@ export default function BookingProcess() {
                   </h3>
 
                   {/* Date */}
-                  <div className="flex items-center gap-2 sm:gap-3" style={{ color: "#A4AEBE" }}>
+                  <div
+                    className="flex items-center gap-2 sm:gap-3"
+                    style={{ color: "#A4AEBE" }}
+                  >
                     <HugeiconsIcon
                       icon={Calendar01Icon}
                       size={18}
@@ -162,12 +173,15 @@ export default function BookingProcess() {
                       className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                     />
                     <p className="text-sm sm:text-base md:text-lg leading-snug">
-                      শনি, সোম এবং বুধবার
+                      {profileData?.chamberTime || "শনি, সোম এবং বুধবার"}
                     </p>
                   </div>
 
                   {/* Time */}
-                  <div className="flex items-center gap-2 sm:gap-3" style={{ color: "#A4AEBE" }}>
+                  <div
+                    className="flex items-center gap-2 sm:gap-3"
+                    style={{ color: "#A4AEBE" }}
+                  >
                     <HugeiconsIcon
                       icon={Clock01Icon}
                       size={18}
@@ -176,12 +190,15 @@ export default function BookingProcess() {
                       className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                     />
                     <p className="text-sm sm:text-base md:text-lg leading-snug">
-                      সন্ধ্যা ৭টা থেকে রাত ৯টা
+                      {profileData.chamberTime}
                     </p>
                   </div>
 
                   {/* Serial */}
-                  <div className="flex items-center gap-2 sm:gap-3" style={{ color: "#A4AEBE" }}>
+                  <div
+                    className="flex items-center gap-2 sm:gap-3"
+                    style={{ color: "#A4AEBE" }}
+                  >
                     <HugeiconsIcon
                       icon={StethoscopeIcon}
                       size={18}
@@ -190,12 +207,15 @@ export default function BookingProcess() {
                       className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                     />
                     <p className="text-sm sm:text-base md:text-lg leading-snug">
-                      সিরিয়ালঃ সকাল ১১টা থেকে রাত ১১ টা
+                      সিরিয়ালঃ {profileData?.appointmentTime || "সকাল ১১টা থেকে রাত ১১ টা"}
                     </p>
                   </div>
 
                   {/* Online Consultation */}
-                  <div className="flex items-center gap-2 sm:gap-3" style={{ color: "#A4AEBE" }}>
+                  <div
+                    className="flex items-center gap-2 sm:gap-3"
+                    style={{ color: "#A4AEBE" }}
+                  >
                     <HugeiconsIcon
                       icon={LaptopIcon}
                       size={18}
@@ -204,7 +224,7 @@ export default function BookingProcess() {
                       className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                     />
                     <p className="text-sm sm:text-base md:text-lg leading-snug whitespace-pre-line">
-                      অনলাইন কন্সাল্টেন্সিঃ সকাল ১১টা থেকে রাত ১১ টা {"\n"} (শনি - শুক্র)
+                      অনলাইন কন্সাল্টেন্সিঃ {profileData?.onlineConsultancyTime || "সকাল ১১টা থেকে রাত ১১ টা (শনি - শুক্র)"}
                     </p>
                   </div>
                 </div>
@@ -219,13 +239,17 @@ export default function BookingProcess() {
                       সিরিয়ালের জন্য
                     </p>
                     <p className="text-base sm:text-lg font-semibold break-all flex flex-col">
-                      <span>01339511108</span>
-                      <span>01992222555</span>
-                      <span>01992222777</span>
+                      {contactNumbers.length > 0 ? (
+                        contactNumbers.map((contact) => (
+                          <span key={contact.number}>{contact.number}</span>
+                        ))
+                      ) : (
+                        <span>০১৩৩৯৫১১১০৮</span>
+                      )}
                     </p>
                   </div>
                   <a
-                    href="tel:01339511108"
+                    href={`tel:${contactNumbers[0]?.number || "01339511108"}`}
                     className="transition-colors rounded-t-2xl p-3 sm:p-4 bg-primary inline-flex items-center justify-center hover:bg-primary/80"
                   >
                     <HugeiconsIcon

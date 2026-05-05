@@ -1,9 +1,16 @@
+import { getProfileData } from "@/services/getProfileData";
+import { IProfile } from "@/types";
 import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-export default function TreatmentSpecialities() {
+export default async function TreatmentSpecialities() {
+  const res = await getProfileData();
+  const profileData: IProfile = res?.data || {};
+
+  const experties = profileData?.treatmentAndExperties || [];
+
   return (
     <section
       id="services"
@@ -46,18 +53,21 @@ export default function TreatmentSpecialities() {
           {/* Right side - Content */}
           <div className="space-y-4 md:space-y-6">
             <p className="text-[#423D96] font-medium text-sm md:text-base">
-              ডাঃ শেখ সারজিনা আনোয়ার
+              {profileData?.name?.bangla || "ডাঃ শেখ সারজিনা আনোয়ার"}
             </p>
 
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-gray-900 leading-tight whitespace-pre-line">
               পেডিয়াট্রিক নিউরোলজি ও ডেভেলপমেন্ট চিকিৎসায় প্রায়
-              {"\n"}১৮+ বছরের অভিজ্ঞতা
+              {"\n"}
+              {profileData?.stats?.yearsOfExperience || "১৮"}+ বছরের
+              অভিজ্ঞতা
             </h2>
 
             <div className="space-y-3 md:space-y-4 text-gray-700 leading-relaxed text-sm md:text-base">
               <p>
-                ডাঃ শেখ সারজিনা আনোয়ার একজন অভিজ্ঞ শিশু রোগ বিশেষজ্ঞ
-                ও শিশু নিউরোলজিস্ট।
+                {profileData?.name?.bangla ||
+                  "ডাঃ শেখ সারজিনা আনোয়ার"} 
+                {" "} একজন অভিজ্ঞ শিশু রোগ বিশেষজ্ঞ ও শিশু নিউরোলজিস্ট।
               </p>
               <p>
                 শিশুদের স্নায়ুজনিত সমস্যা, খিঁচুনি, অটিজম, বিকাশজনিত
@@ -73,342 +83,36 @@ export default function TreatmentSpecialities() {
                   বিশেষত্ব
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 md:gap-y-3">
-                  {/* Neurology & Development Services */}
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      মৃগী ও খিঁচুনি রোগ
-                    </span>
+                {experties.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-2 md:gap-y-3">
+                    {experties.map((expert) => (
+                      <div
+                        key={expert}
+                        className="flex items-start gap-3"
+                      >
+                        <HugeiconsIcon
+                          icon={CheckmarkCircle01Icon}
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[#4285f4] shrink-0 mt-0.5"
+                        />
+                        <span className="text-gray-700 text-sm md:text-base leading-snug">
+                          {expert}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      অটিজম স্পেকট্রাম ডিজঅর্ডার (ASD)
-                    </span>
+                ) : (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                    <p className="text-blue-700 text-sm md:text-base">
+                      বিশেষত্বের তথ্য শীঘ্রই যোগ করা হবে।
+                    </p>
+                    <p className="text-blue-600 text-xs md:text-sm mt-1">
+                      চিকিৎসার বিস্তারিত জানতে আমাদের সাথে যোগাযোগ
+                      করুন।
+                    </p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      এডিএইচডি ও বিকাশজনিত বিলম্ব
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      সেরিব্রাল পালসি ব্যবস্থাপনা
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      নিউরোডেভেলপমেন্টাল ডিজঅর্ডার
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      মুভমেন্ট ডিসঅর্ডার (টিকস, ডিস্টোনিয়া,
-                      এটাক্সিয়া)
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      নিউরোমাসকুলার রোগ (SMA, মাসকুলার ডিস্ট্রফি)
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      নিউরোজেনেটিক ও নিউরোমেটাবলিক রোগ
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      ডেভেলপমেন্টাল রিগ্রেশন
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      নবজাতকের স্নায়ুরোগ (HIE, নবজাতক খিঁচুনি)
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      নিউরো ইনফেকশন ও প্রদাহজনিত রোগ
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      ইইজি ও ভিডিও ইইজি মূল্যায়ন
-                    </span>
-                  </div>
-
-                  {/* General Child Health Services */}
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      জ্বর, সর্দি, কাশি
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      শ্বাসকষ্ট
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      বমি ও পাতলা পায়খানা
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      কোষ্ঠকাঠিন্য
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      খাবারে অরুচি
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      কৃমির সমস্যা
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      দুর্বলতা ও শরীর ফ্যাকাসে হওয়া
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      শরীর হলুদ হয়ে যাওয়া
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      বয়স অনুযায়ী সঠিক বৃদ্ধি না হওয়া
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      পেট ব্যথা
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      প্রস্রাবের সময় জ্বালাপোড়া ও ঘনঘন প্রস্রাব
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      চোখ-মুখ ও শরীর ফুলে যাওয়া
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      শরীরে চুলকানি ও লাল দাগ
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      শিশুদের মানসিক ও আচরণগত সমস্যা
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      শিশুদের মোবাইল, টিভি ও কম্পিউটার আসক্তি
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      শিশুদের চোখের সমস্যা
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      ভ্যাকসিন সংক্রান্ত পরামর্শ
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className="text-[#4285f4]"
-                    />
-                    <span className="text-gray-700 text-sm md:text-base leading-snug">
-                      শিশুদের কোভিড–১৯ সংক্রান্ত সমস্যা
-                    </span>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
 

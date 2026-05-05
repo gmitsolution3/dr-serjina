@@ -1,3 +1,5 @@
+import { getProfileData } from "@/services/getProfileData";
+import { IProfile } from "@/types";
 import {
   InjectionIcon,
   StarAward02Icon,
@@ -6,7 +8,12 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
-export default function Stats() {
+export default async function Stats() {
+  const res = await getProfileData();
+  const profileData: IProfile = res?.data || {};
+
+  const statsData = profileData.stats;
+
   return (
     <section
       id="stats"
@@ -30,7 +37,7 @@ export default function Stats() {
               </div>
               <div className="space-y-1">
                 <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
-                  ৫০০০<span className="text-primary">+</span>
+                  {statsData?.serviceProvided || "৫০০০"}<span className="text-primary">+</span>
                 </h3>
                 <p className="text-gray-600 text-xs md:text-sm lg:text-base leading-snug">
                   রোগীকে সেবা প্রদান
@@ -52,7 +59,7 @@ export default function Stats() {
               </div>
               <div className="space-y-1">
                 <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
-                  ১৮<span className="text-primary">+</span>
+                  {statsData?.yearsOfExperience || "১৮"}<span className="text-primary">+</span>
                 </h3>
                 <p className="text-gray-600 text-xs md:text-sm lg:text-base leading-snug">
                   বছরের অভিজ্ঞতা
@@ -74,7 +81,7 @@ export default function Stats() {
               </div>
               <div className="space-y-1">
                 <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
-                  ১০০০<span className="text-primary">+</span>
+                  {statsData?.criticalProblemSolved || "১০০০"}<span className="text-primary">+</span>
                 </h3>
                 <p className="text-gray-600 text-xs md:text-sm lg:text-base leading-snug">
                   জটিল সমস্যা সমাধান
@@ -96,7 +103,7 @@ export default function Stats() {
               </div>
               <div className="space-y-1">
                 <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
-                  ২২<span className="text-primary">+</span>
+                  {statsData?.professionalTraining || "২২"}<span className="text-primary">+</span>
                 </h3>
                 <p className="text-gray-600 text-xs md:text-sm lg:text-base leading-snug">
                   প্রফেশনাল ট্রেনিং

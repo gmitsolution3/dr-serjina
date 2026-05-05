@@ -1,8 +1,15 @@
-// components/CallToAction.tsx
+import { getProfileData } from "@/services/getProfileData";
+import { IProfile } from "@/types";
 import { CallAddIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
-export default function CallToAction() {
+export default async function CallToAction() {
+  const res = await getProfileData();
+
+  const profileData: IProfile = res?.data || {};
+
+  const primaryNumber = profileData.contactNumbers.find(number => number.isPrimary);
+
   return (
     <section
       id="contact"
@@ -22,7 +29,7 @@ export default function CallToAction() {
             <div className="relative flex items-stretch">
               {/* Phone Button */}
               <a
-                href="tel:+8801339511108"
+                href={`tel:${primaryNumber?.number}`}
                 className="flex items-center justify-center gap-2 md:gap-3 flex-1 lg:flex-initial font-medium text-sm md:text-base bg-primary text-white rounded-tl-2xl py-3 md:py-4 px-4 md:px-6 lg:px-8 hover:bg-primary/60 transition-colors"
               >
                 <HugeiconsIcon
@@ -32,7 +39,7 @@ export default function CallToAction() {
                   strokeWidth={1.5}
                 />
                 <span className="whitespace-nowrap">
-                  +8801339511108
+                  {primaryNumber?.number}
                 </span>
               </a>
 
