@@ -355,7 +355,7 @@ export default function Header() {
               </ul>
 
               <div>
-                <HeaderSideMenu />
+                <HeaderSideMenu profileData={profileData} />
               </div>
             </div>
           </nav>
