@@ -28,7 +28,7 @@ export default function ProfilePage() {
     "/profile",
   );
 
-  const profileData: IProfile = data?.data;
+  const profileData: IProfile = data?.data || {};
 
   // Loading state
   if (isLoading) {

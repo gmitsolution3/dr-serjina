@@ -16,18 +16,30 @@ import {
 } from "@/components/ui/sidebar";
 // import useLogout from "@/hooks/useLogout";
 // import { useSession } from "@/lib/auth-context";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useFetch } from "@/hooks/swr/useFetch";
+import { IProfile } from "@/types";
+import { getUserNameInitials } from "@/utils";
 import { Logout01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  mainMenuItems,
-  settingsItems,
-} from "./menuitems";
+import { mainMenuItems, settingsItems } from "./menuitems";
 
 export function DashboardSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+
+  const { data, isLoading, isError, refetch } = useFetch("/profile");
+
+  const profileData: IProfile = data?.data || {};
+
+  console.log(profileData);
 
   // const { session } = useSession();
 
@@ -128,22 +140,37 @@ export function DashboardSidebar() {
 
       <SidebarFooter className="border-t border-sidebar-border p-4">
         <div className="flex items-center gap-3">
-          {/* <Avatar className="h-10 w-10 shrink-0">
-            <AvatarImage src={user?.image} />
-            <AvatarFallback className="bg-primary text-primary-foreground">
-              {getUserNameInitials(session)}
-            </AvatarFallback>
-          </Avatar> */}
-          {!isCollapsed && (
-            <div className="flex flex-1 flex-col overflow-hidden">
-              {/* <span className="truncate text-sm font-medium text-sidebar-foreground">
-                {user?.name} test name
-              </span>
-              <span className="truncate text-xs text-muted-foreground">
-                {user?.role} test name
-              </span> */}
-            </div>
+          {isLoading ? (
+            <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
+          ) : (
+            <Avatar className="h-10 w-10 shrink-0">
+              <AvatarImage src={profileData?.profileImage} />
+              <AvatarFallback className="bg-primary text-primary-foreground">
+                {getUserNameInitials(profileData?.name?.english || "")}
+              </AvatarFallback>
+            </Avatar>
           )}
+          
+          {!isCollapsed && (
+            <>
+              {isLoading ? (
+                <div className="flex flex-1 flex-col gap-1 overflow-hidden">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-3 w-16" />
+                </div>
+              ) : (
+                <div className="flex flex-1 flex-col overflow-hidden">
+                  <span className="truncate text-sm font-medium text-sidebar-foreground">
+                    {profileData?.name?.english}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {profileData?.specializedIn}
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+          
           {!isCollapsed && (
             <button
               // onClick={handleLogout}

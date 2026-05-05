@@ -15,14 +15,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useFetch } from "@/hooks/swr/useFetch";
 // import useLogout from "@/hooks/useLogout";
 // import { useSession } from "@/lib/auth-context";
 import { Menu01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useState } from "react";
+import { IProfile } from "@/types"; 
+import { getUserNameInitials } from "@/utils";
 
 export function DashboardHeader() {
   const [isDark, setIsDark] = useState(false);
+
+  const { data, isLoading, isError, refetch } = useFetch(
+      "/profile",
+    );
+
+  const profileData: IProfile = data?.data || {};
 
   // const { session } = useSession();
 
@@ -51,12 +61,16 @@ export function DashboardHeader() {
               variant="ghost"
               className="relative flex items-center gap-2 px-2"
             >
-              <Avatar className="h-8 w-8">
-                {/* <AvatarImage src={user?.image} /> */}
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                  {/* {getAvatarInitial(session)} */}
-                </AvatarFallback>
-              </Avatar>
+              {isLoading ? (
+                <Skeleton className="h-8 w-8 rounded-full" />
+              ) : (
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={profileData?.profileImage} />
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                    {getUserNameInitials(profileData?.name?.english || "")}
+                  </AvatarFallback>
+                </Avatar>
+              )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
