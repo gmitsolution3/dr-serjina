@@ -1,6 +1,18 @@
 "use client";
 
-import { useFetch } from "@/hooks/swr/useFetch";
+import CreateExpertiesModal from "@/components/admin/experties/CreateExpertiesModal";
+import ExpertiesActionCell from "@/components/admin/experties/ExpertiesActionCell";
+import ExpertiesEmpty from "@/components/admin/experties/ExpertiesEmpty";
+import ExpertiesError from "@/components/admin/experties/ExpertiesError";
+import ExpertiesLoader from "@/components/admin/experties/ExpertiesLoader";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -9,42 +21,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useFetch } from "@/hooks/swr/useFetch";
+import { IExperties, IMeta } from "@/types";
+import { formatDate } from "@/utils";
 import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  useReactTable,
-  ColumnDef,
-  SortingState,
-} from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
+  ArrowDownIcon,
   ArrowLeft02Icon,
+  ArrowLeftDoubleIcon,
   ArrowRight02Icon,
-  Refresh04Icon,
+  ArrowRightDoubleIcon,
   ArrowUpDownIcon,
   ArrowUpIcon,
-  ArrowDownIcon,
   PlusSignIcon,
+  Refresh04Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useState, useEffect, useMemo } from "react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { formatDate } from "@/utils";
-import ExpertiesLoader from "@/components/admin/experties/ExpertiesLoader";
-import ExpertiesEmpty from "@/components/admin/experties/ExpertiesEmpty";
-import ExpertiesError from "@/components/admin/experties/ExpertiesError";
-import ExpertiesActionCell from "@/components/admin/experties/ExpertiesActionCell";
-import CreateExpertiesModal from "@/components/admin/experties/CreateExpertiesModal";
-import { IExperties, IMeta } from "@/types";
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useEffect, useMemo, useState } from "react";
 
 export default function ExpertiesPage() {
   const [page, setPage] = useState(1);
@@ -53,18 +55,26 @@ export default function ExpertiesPage() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const { data, isLoading, isError, refetch } = useFetch("/treatment-experties", {
-    params: {
-      page: page,
-      limit: limit,
-      sortBy: "createdAt",
-      sortOrder: "asc"
-    }
-  });
+  const { data, isLoading, isError, refetch } = useFetch(
+    "/treatment-experties",
+    {
+      params: {
+        page: page,
+        limit: limit,
+        sortBy: "createdAt",
+        sortOrder: "asc",
+      },
+    },
+  );
 
   // Extract data from response
   const expertiesList: IExperties[] = data?.data.expertiesList || [];
-  const meta: IMeta = data?.data?.meta || { page: 1, limit: 10, total: 0, totalPage: 1 };
+  const meta: IMeta = data?.data?.meta || {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPage: 1,
+  };
 
   // Reset to first page when search filter changes
   useEffect(() => {
@@ -73,11 +83,14 @@ export default function ExpertiesPage() {
 
   // Client-side filtering for search (since search is likely not server-side)
   const filteredExperties = useMemo(
-  () => expertiesList.filter((experties) =>
-    experties.name.toLowerCase().includes(globalFilter.toLowerCase())
-  ),
-  [expertiesList, globalFilter],
-);
+    () =>
+      expertiesList.filter((experties) =>
+        experties.name
+          .toLowerCase()
+          .includes(globalFilter.toLowerCase()),
+      ),
+    [expertiesList, globalFilter],
+  );
 
   const columns: ColumnDef<IExperties>[] = [
     {
@@ -93,11 +106,20 @@ export default function ExpertiesPage() {
           >
             Name
             {column.getIsSorted() === "asc" ? (
-              <HugeiconsIcon icon={ArrowUpIcon} className="ml-2 h-4 w-4" />
+              <HugeiconsIcon
+                icon={ArrowUpIcon}
+                className="ml-2 h-4 w-4"
+              />
             ) : column.getIsSorted() === "desc" ? (
-              <HugeiconsIcon icon={ArrowDownIcon} className="ml-2 h-4 w-4" />
+              <HugeiconsIcon
+                icon={ArrowDownIcon}
+                className="ml-2 h-4 w-4"
+              />
             ) : (
-              <HugeiconsIcon icon={ArrowUpDownIcon} className="ml-2 h-4 w-4" />
+              <HugeiconsIcon
+                icon={ArrowUpDownIcon}
+                className="ml-2 h-4 w-4"
+              />
             )}
           </Button>
         );
@@ -116,11 +138,20 @@ export default function ExpertiesPage() {
           >
             Created At
             {column.getIsSorted() === "asc" ? (
-              <HugeiconsIcon icon={ArrowUpIcon} className="ml-2 h-4 w-4" />
+              <HugeiconsIcon
+                icon={ArrowUpIcon}
+                className="ml-2 h-4 w-4"
+              />
             ) : column.getIsSorted() === "desc" ? (
-              <HugeiconsIcon icon={ArrowDownIcon} className="ml-2 h-4 w-4" />
+              <HugeiconsIcon
+                icon={ArrowDownIcon}
+                className="ml-2 h-4 w-4"
+              />
             ) : (
-              <HugeiconsIcon icon={ArrowUpDownIcon} className="ml-2 h-4 w-4" />
+              <HugeiconsIcon
+                icon={ArrowUpDownIcon}
+                className="ml-2 h-4 w-4"
+              />
             )}
           </Button>
         );
@@ -131,9 +162,7 @@ export default function ExpertiesPage() {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => (
-        <ExpertiesActionCell
-          experties={row.original}
-        />
+        <ExpertiesActionCell experties={row.original} />
       ),
     },
   ];
@@ -199,7 +228,10 @@ export default function ExpertiesPage() {
                   size="sm"
                   className="gap-2"
                 >
-                  <HugeiconsIcon icon={Refresh04Icon} className="h-4 w-4" />
+                  <HugeiconsIcon
+                    icon={Refresh04Icon}
+                    className="h-4 w-4"
+                  />
                   Refresh
                 </Button>
               </div>
@@ -220,13 +252,16 @@ export default function ExpertiesPage() {
                 className="gap-2 p-5"
                 onClick={() => setShowCreateModal(true)}
               >
-                <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />
+                <HugeiconsIcon
+                  icon={PlusSignIcon}
+                  className="h-4 w-4"
+                />
                 Create New Experties
               </Button>
             </div>
 
-            {/* Table */}
-            <div className="rounded-md border overflow-x-auto">
+            {/* Desktop Table View - Hidden on mobile */}
+            <div className="hidden md:block rounded-md border overflow-x-auto">
               <Table>
                 <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -261,6 +296,49 @@ export default function ExpertiesPage() {
               </Table>
             </div>
 
+            {/* Mobile Card View - Visible only on mobile */}
+            <div className="md:hidden space-y-4">
+              {table.getRowModel().rows.map((row) => {
+                const experties = row.original;
+                return (
+                  <div
+                    key={row.id}
+                    className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm"
+                  >
+                    <div className="space-y-3">
+                      {/* Name Field */}
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                          Name:
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white text-right">
+                          {experties.name}
+                        </span>
+                      </div>
+
+                      {/* Created At Field */}
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                          Created At:
+                        </span>
+                        <span className="text-sm text-gray-900 dark:text-white">
+                          {formatDate(experties.createdAt)}
+                        </span>
+                      </div>
+
+                      {/* Actions Field */}
+                      <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                          Actions:
+                        </span>
+                        <ExpertiesActionCell experties={experties} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
             {/* Server-side Pagination Controls */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
               <div className="text-sm text-muted-foreground">
@@ -275,7 +353,10 @@ export default function ExpertiesPage() {
                   onClick={() => setPage(1)}
                   disabled={page === 1}
                 >
-                  <HugeiconsIcon icon={ArrowLeft02Icon} className="h-4 w-4" />
+                  <HugeiconsIcon
+                    icon={ArrowLeftDoubleIcon}
+                    className="h-4 w-4"
+                  />
                 </Button>
                 <Button
                   variant="outline"
@@ -283,7 +364,10 @@ export default function ExpertiesPage() {
                   onClick={() => setPage(page - 1)}
                   disabled={page === 1}
                 >
-                  <HugeiconsIcon icon={ArrowLeft02Icon} className="h-4 w-4" />
+                  <HugeiconsIcon
+                    icon={ArrowLeft02Icon}
+                    className="h-4 w-4"
+                  />
                 </Button>
                 <span className="text-sm whitespace-nowrap">
                   Page {page} of {meta.totalPage}
@@ -294,7 +378,10 @@ export default function ExpertiesPage() {
                   onClick={() => setPage(page + 1)}
                   disabled={page === meta.totalPage}
                 >
-                  <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
+                  <HugeiconsIcon
+                    icon={ArrowRight02Icon}
+                    className="h-4 w-4"
+                  />
                 </Button>
                 <Button
                   variant="outline"
@@ -302,7 +389,10 @@ export default function ExpertiesPage() {
                   onClick={() => setPage(meta.totalPage)}
                   disabled={page === meta.totalPage}
                 >
-                  <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
+                  <HugeiconsIcon
+                    icon={ArrowRightDoubleIcon}
+                    className="h-4 w-4"
+                  />
                 </Button>
               </div>
             </div>

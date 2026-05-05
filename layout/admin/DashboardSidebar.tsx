@@ -55,7 +55,7 @@ export function DashboardSidebar() {
             {!isCollapsed && (
               <div className="flex flex-col">
                 <span className="text-primary font-semibold">
-                  Doctor Panel
+                  Admin Panel
                 </span>
               </div>
             )}
