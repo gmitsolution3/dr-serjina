@@ -67,7 +67,7 @@ export default function ExpertiesPage() {
     },
   );
 
-  // Extract data from response
+  
   const expertiesList: IExperties[] = data?.data.expertiesList || [];
   const meta: IMeta = data?.data?.meta || {
     page: 1,
@@ -76,12 +76,11 @@ export default function ExpertiesPage() {
     totalPage: 1,
   };
 
-  // Reset to first page when search filter changes
   useEffect(() => {
     setPage(1);
   }, [globalFilter]);
 
-  // Client-side filtering for search (since search is likely not server-side)
+
   const filteredExperties = useMemo(
     () =>
       expertiesList.filter((experties) =>
