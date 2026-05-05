@@ -1,4 +1,6 @@
 "use client";
+import { useFetch } from "@/hooks/swr/useFetch";
+import { IProfile } from "@/types";
 import {
   CallIcon,
   MapPinCheckIcon,
@@ -13,9 +15,211 @@ import HeaderSideMenu from "./HeaderSideMenu";
 import MenuLink from "./MenuLink";
 import { Button } from "./ui/button";
 
+// Skeleton Components
+const LocationSkeleton = () => (
+  <div className="hidden lg:flex items-center space-x-3 border-r border-[#EAEAEA] pe-5">
+    <span className="bg-primary text-white p-4 rounded-t-2xl">
+      <HugeiconsIcon
+        icon={MapPinCheckIcon}
+        size={24}
+        color="currentColor"
+        strokeWidth={1.5}
+      />
+    </span>
+    <div className="space-y-2">
+      <div className="h-5 w-20 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-4 w-40 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+  </div>
+);
+
+const PhoneSkeleton = () => (
+  <div className="hidden lg:flex items-center space-x-3 border-r border-[#EAEAEA] pe-5">
+    <span className="bg-primary text-white p-4 rounded-t-2xl">
+      <HugeiconsIcon
+        icon={CallIcon}
+        size={24}
+        color="currentColor"
+        strokeWidth={1.5}
+      />
+    </span>
+    <div className="space-y-2">
+      <div className="h-5 w-24 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+  </div>
+);
+
+const MobileLocationSkeleton = () => (
+  <div className="flex items-center space-x-3">
+    <span className="bg-primary text-white p-3 rounded-t-2xl">
+      <HugeiconsIcon
+        icon={MapPinCheckIcon}
+        size={24}
+        color="currentColor"
+        strokeWidth={1.5}
+      />
+    </span>
+    <div className="space-y-2 flex-1">
+      <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-3 w-48 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-3 w-40 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+  </div>
+);
+
+const MobilePhoneSkeleton = () => (
+  <div className="flex items-center space-x-3">
+    <span className="bg-primary text-white p-3 rounded-t-2xl">
+      <HugeiconsIcon
+        icon={CallIcon}
+        size={24}
+        color="currentColor"
+        strokeWidth={1.5}
+      />
+    </span>
+    <div className="space-y-2 flex-1">
+      <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-3 w-36 bg-gray-200 rounded animate-pulse"></div>
+      <div className="h-3 w-36 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+  </div>
+);
+
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const { data, isLoading, isError, refetch } = useFetch("/profile");
+
+  const profileData: IProfile = data?.data || {};
+
+  console.log(profileData);
+
+  // Render location content
+  const renderLocationContent = () => {
+    if (isLoading) {
+      return (
+        <div className="text-[#525766] text-sm flex flex-col space-y-1">
+          <div className="h-4 w-36 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-4 w-28 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      );
+    }
+
+    if (profileData?.chamber?.length) {
+      return (
+        <p className="text-[#525766] text-sm flex flex-col">
+          {profileData.chamber.map((chamber) => (
+            <span key={chamber.name}>
+              {chamber?.name}, {chamber?.location}
+            </span>
+          ))}
+        </p>
+      );
+    }
+
+    return <p className="text-[#525766] text-sm">লোকেশন তথ্য পাওয়া যায়নি</p>;
+  };
+
+  // Render phone content
+  const renderPhoneContent = () => {
+    if (isLoading) {
+      return (
+        <div className="text-[#525766] text-sm flex flex-col space-y-1">
+          <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      );
+    }
+
+    if (profileData?.contactNumbers?.length) {
+      return (
+        <p className="text-[#525766] text-sm flex flex-col">
+          {profileData.contactNumbers.slice(0, 3).map((number) => (
+            <a key={number.number} href={`tel:${number?.number}`}>
+              {number?.number}
+            </a>
+          ))}
+        </p>
+      );
+    }
+
+    return <p className="text-[#525766] text-sm">কোনো নম্বর পাওয়া যায়নি</p>;
+  };
+
+  // Render mobile location content
+  const renderMobileLocationContent = () => {
+    if (isLoading) {
+      return (
+        <div className="space-y-1 flex-1">
+          <div className="h-3 w-28 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-3 w-40 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      );
+    }
+
+    if (profileData?.chamber?.length) {
+      return (
+        <div>
+          <h3 className="font-medium text-sm">লোকেশন</h3>
+          <p className="text-[#525766] text-xs">
+            {profileData.chamber.map((chamber, index) => (
+              <span key={chamber.name}>
+                {chamber?.name}, {chamber?.location}
+                {index < profileData.chamber.length - 1 && ", "}
+              </span>
+            ))}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <h3 className="font-medium text-sm">লোকেশন</h3>
+        <p className="text-[#525766] text-xs">লোকেশন তথ্য পাওয়া যায়নি</p>
+      </div>
+    );
+  };
+
+  // Render mobile phone content
+  const renderMobilePhoneContent = () => {
+    if (isLoading) {
+      return (
+        <div className="space-y-1 flex-1">
+          <div className="h-3 w-24 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      );
+    }
+
+    if (profileData?.contactNumbers?.length) {
+      return (
+        <div>
+          <h3 className="font-medium text-sm">সিরিয়ালের জন্য</h3>
+          <p className="text-[#525766] text-xs">
+            {profileData.contactNumbers.slice(0, 3).map((number, index) => (
+              <span key={number.number}>
+                <a href={`tel:${number?.number}`}>{number?.number}</a>
+                {index < Math.min(2, profileData.contactNumbers.length - 1) && ", "}
+              </span>
+            ))}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <h3 className="font-medium text-sm">সিরিয়ালের জন্য</h3>
+        <p className="text-[#525766] text-xs">কোনো নম্বর পাওয়া যায়নি</p>
+      </div>
+    );
+  };
 
   return (
     <header className="py-4 lg:py-8">
@@ -32,7 +236,6 @@ export default function Header() {
                 alt="Logo"
                 className="w-32"
               />
-              {/* Dr. SK. SERJINA ANWAR */}
             </Link>
 
             {/* Mobile Menu Toggle */}
@@ -62,10 +265,7 @@ export default function Header() {
             </span>
             <div>
               <h3 className="font-medium">লোকেশন</h3>
-              <p className="text-[#525766] text-sm flex flex-col">
-                <span>ইয়র্ক হাসপাতাল, বনানী, ঢাকা ১২১৩</span>
-                <span>কুর্মিটলা জেনারেল হসপিটাল, ঢাকা</span>
-              </p>
+              {renderLocationContent()}
             </div>
           </div>
 
@@ -81,10 +281,7 @@ export default function Header() {
             </span>
             <div>
               <h3 className="font-medium">সিরিয়ালের জন্য</h3>
-              <p className="text-[#525766] text-sm flex flex-col">
-                <a href="tel:+8801339511108">+8801339-511108</a>
-                <a href="tel:+8801992222555">+8801992222555</a>
-              </p>
+              {renderPhoneContent()}
             </div>
           </div>
 
@@ -95,10 +292,7 @@ export default function Header() {
               variant="primary"
               className="bg-primary hover:bg-[#10172E]"
             >
-              <a
-                href="https://forms.gle/STorhY5dkm5qKefP7"
-                target="_blank"
-              >
+              <a href="https://forms.gle/STorhY5dkm5qKefP7" target="_blank">
                 অ্যাপয়েন্টমেন্ট বুক করুন
               </a>
             </Button>
@@ -239,13 +433,7 @@ export default function Header() {
                     strokeWidth={1.5}
                   />
                 </span>
-                <div>
-                  <h3 className="font-medium text-sm">লোকেশন</h3>
-                  <p className="text-[#525766] text-xs">
-                    ইয়র্ক হাসপাতাল, বনানী, ঢাকা ১২১৩, কুর্মিটলা
-                    জেনারেল হসপিটাল, ঢাকা
-                  </p>
-                </div>
+                {renderMobileLocationContent()}
               </div>
 
               {/* Phone */}
@@ -258,15 +446,7 @@ export default function Header() {
                     strokeWidth={1.5}
                   />
                 </span>
-                <div>
-                  <h3 className="font-medium text-sm">
-                    সিরিয়ালের জন্য
-                  </h3>
-                  <p className="text-[#525766] text-xs">
-                    <a href="tel:+8801339511108">+8801339-511108</a>,{" "}
-                    <a href="tel:+8801992222555">+8801992222555</a>
-                  </p>
-                </div>
+                {renderMobilePhoneContent()}
               </div>
 
               {/* Mobile Appointment Button */}
@@ -275,10 +455,7 @@ export default function Header() {
                 variant="primary"
                 className="bg-primary hover:bg-[#10172E] w-full"
               >
-                <a
-                  href="https://forms.gle/STorhY5dkm5qKefP7"
-                  target="_blank"
-                >
+                <a href="https://forms.gle/STorhY5dkm5qKefP7" target="_blank">
                   অ্যাপয়েন্টমেন্ট বুক করুন
                 </a>
               </Button>
