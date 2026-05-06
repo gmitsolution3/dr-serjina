@@ -11,6 +11,7 @@ import {
   YoutubeIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link";
 
 export default async function Footer() {
   const res = await getProfileData();
@@ -276,14 +277,14 @@ export default async function Footer() {
             </p>
             <p>
               Copyright © {new Date().getFullYear()}{" "}
-              <a
-                href="https://docs.google.com/spreadsheets/d/1rBqyAvFFWCFzQ0E77YBypDR6r-kFQliqPBnfTadicqQ/edit?usp=drive_link"
+              <Link
+                href="/admin-dashboard"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-yellow-400 transition-colors"
               >
                 {profileData?.name?.english || "Dr. SK. Serjina Anwar"}
-              </a>{" "}
+              </Link>{" "}
               All rights reserved.
             </p>
           </div>
