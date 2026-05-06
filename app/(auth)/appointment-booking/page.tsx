@@ -1,4 +1,3 @@
-// app/appointment/page.tsx
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +9,7 @@ import { z } from "zod";
 
 // Hugeicons
 import {
+  ArrowLeft02Icon,
   ArrowRight02Icon,
   Building01Icon,
   Calendar01Icon,
@@ -209,6 +209,24 @@ export default function AppointmentPage() {
           <p className="text-gray-600 dark:text-gray-400">
             আপনার প্রয়োজনীয় তথ্য দিয়ে ফর্মটি পূরণ করুন
           </p>
+        </div>
+
+        {/* Back to Home Button */}
+        <div className="mb-6">
+          <Button
+            variant="primary"
+            onClick={() => router.push("/")}
+            className="bg-primary"
+          >
+            <HugeiconsIcon
+              icon={ArrowRight02Icon}
+              size={16}
+              color="currentColor"
+              strokeWidth={1.5}
+              className="rotate-180"
+            />
+            হোমপেজে ফিরুন
+          </Button>
         </div>
 
         {/* Form Card */}
