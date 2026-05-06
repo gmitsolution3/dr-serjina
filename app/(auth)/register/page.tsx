@@ -1,4 +1,3 @@
-// app/register/page.tsx
 "use client";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,85 +13,111 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { authClient } from "@/lib/auth-client";
+import { notify } from "@/utils/notify";
+import { useRouter } from "next/navigation";
+
+// Define validation schema with Zod
+const registerSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, "নাম প্রয়োজন")
+      .min(2, "নাম কমপক্ষে ২ অক্ষরের হতে হবে")
+      .max(50, "নাম সর্বোচ্চ ৫০ অক্ষরের হতে পারে"),
+    email: z
+      .string()
+      .min(1, "ইমেইল প্রয়োজন")
+      .email("সঠিক ইমেইল ফরম্যাট দিন (উদাহরণ: name@example.com)"),
+    phone: z
+      .string()
+      .min(1, "মোবাইল নাম্বার প্রয়োজন")
+      .min(11, "মোবাইল নাম্বার কমপক্ষে ১১ অক্ষরের হতে হবে")
+      .max(11, "মোবাইল নাম্বার সর্বচ্চ ১১ অক্ষরের হতে হবে")
+      .regex(
+        /^(01)[3-9]\d{8}$/,
+        "সঠিক মোবাইল নাম্বার দিন (উদাহরণ: 01XXXXXXXXX)",
+      ),
+    password: z
+      .string()
+      .min(1, "পাসওয়ার্ড প্রয়োজন")
+      .min(8, "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!.])[A-Za-z\d@#$%^&*!.]{8,}$/,
+        "পাসওয়ার্ডে কমপক্ষে ১টি বড় হাতের অক্ষর, কমপক্ষে ১টি সংখ্যা ও ১টি বিশেষ অক্ষর (@#$%^&*.) থাকতে হবে",
+      ),
+    confirmPassword: z.string().min(1, "পাসওয়ার্ড নিশ্চিত করুন"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "পাসওয়ার্ড দুটি মিলছে না",
+    path: ["confirmPassword"],
+  });
+
+const getPasswordStrength = (password: string) => {
+  let score = 0;
+
+  if (password.length >= 8) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/\d/.test(password)) score++;
+  if (/[@#$%^&*.]/.test(password)) score++;
+
+  return score;
+};
+
+const getStrengthMeta = (score: number) => {
+  if (score <= 2) {
+    return { label: "দুর্বল", color: "bg-red-500" };
+  }
+  if (score === 3 || score === 4) {
+    return { label: "মাঝারি", color: "bg-yellow-500" };
+  }
+  return { label: "শক্তিশালী", color: "bg-green-500" };
+};
+
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    watch,
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
+  // Watch password field for real-time validation feedback
+  const password = watch("password");
+
+  const score = getPasswordStrength(password || "");
+  const { label, color } = getStrengthMeta(score);
+
+  const onSubmit = async (data: RegisterFormData) => {
+    const { confirmPassword, ...submitData } = data;
+
+    const res = await authClient.signUp.email(submitData);
+
+    if (res.data) {
+      notify.success("Registration successful! Login to continue.");
+      router.push("/login");
+    } else {
+      notify.error(res?.error?.message as string);
     }
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "নাম প্রয়োজন";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "ইমেল প্রয়োজন";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "সঠিক ইমেল ঠিকানা দিন";
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "ফোন নম্বর প্রয়োজন";
-    } else if (
-      !/^\+?[0-9]{10,14}$/.test(formData.phone.replace(/\s/g, ""))
-    ) {
-      newErrors.phone = "সঠিক ফোন নম্বর দিন";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "পাসওয়ার্ড প্রয়োজন";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে";
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "পাসওয়ার্ড মিলছে না";
-    }
-
-    return newErrors;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors = validateForm();
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    // Handle registration logic here
-    console.log("Registration data:", {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      password: formData.password,
-    });
-
-    // Redirect to login or dashboard
-    // router.push("/login");
   };
 
   return (
@@ -118,7 +143,7 @@ export default function RegisterPage() {
 
         {/* Registration Form */}
         <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Full Name Field */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
@@ -135,18 +160,17 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
                   placeholder="আপনার নাম"
                   className={`w-full pl-10 pr-4 py-3 bg-[#1a2332] border ${
                     errors.name ? "border-red-500" : "border-gray-700"
                   } rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors`}
+                  {...register("name")}
+                  aria-invalid={errors.name ? "true" : "false"}
                 />
               </div>
               {errors.name && (
-                <p className="text-red-400 text-xs mt-1">
-                  {errors.name}
+                <p className="text-red-400 text-xs mt-1" role="alert">
+                  {errors.name.message}
                 </p>
               )}
             </div>
@@ -167,20 +191,17 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
                   placeholder="you@example.com"
                   className={`w-full pl-10 pr-4 py-3 bg-[#1a2332] border ${
-                    errors.email
-                      ? "border-red-500"
-                      : "border-gray-700"
+                    errors.email ? "border-red-500" : "border-gray-700"
                   } rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors`}
+                  {...register("email")}
+                  aria-invalid={errors.email ? "true" : "false"}
                 />
               </div>
               {errors.email && (
-                <p className="text-red-400 text-xs mt-1">
-                  {errors.email}
+                <p className="text-red-400 text-xs mt-1" role="alert">
+                  {errors.email.message}
                 </p>
               )}
             </div>
@@ -201,20 +222,17 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="+8801XXXXXXXXX"
+                  placeholder="01XXXXXXXXX"
                   className={`w-full pl-10 pr-4 py-3 bg-[#1a2332] border ${
-                    errors.phone
-                      ? "border-red-500"
-                      : "border-gray-700"
+                    errors.phone ? "border-red-500" : "border-gray-700"
                   } rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors`}
+                  {...register("phone")}
+                  aria-invalid={errors.phone ? "true" : "false"}
                 />
               </div>
               {errors.phone && (
-                <p className="text-red-400 text-xs mt-1">
-                  {errors.phone}
+                <p className="text-red-400 text-xs mt-1" role="alert">
+                  {errors.phone.message}
                 </p>
               )}
             </div>
@@ -235,20 +253,18 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="কমপক্ষে ৬ অক্ষর"
+                  placeholder="কমপক্ষে ৮ অক্ষর"
                   className={`w-full pl-10 pr-12 py-3 bg-[#1a2332] border ${
-                    errors.password
-                      ? "border-red-500"
-                      : "border-gray-700"
+                    errors.password ? "border-red-500" : "border-gray-700"
                   } rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors`}
+                  {...register("password")}
+                  aria-invalid={errors.password ? "true" : "false"}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   <HugeiconsIcon
                     icon={showPassword ? EyeIcon : ViewOffIcon}
@@ -258,9 +274,12 @@ export default function RegisterPage() {
                   />
                 </button>
               </div>
+              <p className="text-gray-500 text-xs mt-1">
+                পাসওয়ার্ডে কমপক্ষে ১টি বড় হাতের অক্ষর, কমপক্ষে ১টি সংখ্যা ও ১টি বিশেষ অক্ষর (@#$%^&*.) ব্যবহার করুন
+              </p>
               {errors.password && (
-                <p className="text-red-400 text-xs mt-1">
-                  {errors.password}
+                <p className="text-red-400 text-xs mt-1" role="alert">
+                  {errors.password.message}
                 </p>
               )}
             </div>
@@ -282,22 +301,18 @@ export default function RegisterPage() {
                 </div>
                 <input
                   type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
                   placeholder="পাসওয়ার্ড পুনরায় লিখুন"
                   className={`w-full pl-10 pr-12 py-3 bg-[#1a2332] border ${
-                    errors.confirmPassword
-                      ? "border-red-500"
-                      : "border-gray-700"
+                    errors.confirmPassword ? "border-red-500" : "border-gray-700"
                   } rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors`}
+                  {...register("confirmPassword")}
+                  aria-invalid={errors.confirmPassword ? "true" : "false"}
                 />
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   <HugeiconsIcon
                     icon={showConfirmPassword ? EyeIcon : ViewOffIcon}
@@ -308,26 +323,48 @@ export default function RegisterPage() {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-400 text-xs mt-1">
-                  {errors.confirmPassword}
+                <p className="text-red-400 text-xs mt-1" role="alert">
+                  {errors.confirmPassword.message}
                 </p>
+              )}
+
+              {/* Password strength indicator */}
+              {password && (
+                <div className="mt-2 space-y-2">
+                  {/* Progress Bar */}
+                  <div className="w-full h-2 bg-gray-700 rounded overflow-hidden">
+                    <div
+                      className={`h-2 rounded transition-all duration-300 ${color}`}
+                      style={{ width: `${(score / 5) * 100}%` }}
+                    />
+                  </div>
+
+                  {/* Label */}
+                  <p className="text-xs text-gray-400">
+                    পাসওয়ার্ড শক্তি:{" "}
+                    <span className="font-medium">{label}</span>
+                  </p>
+                </div>
               )}
             </div>
 
             {/* Register Button */}
             <Button
               type="submit"
+              disabled={isSubmitting}
               variant="primary"
-              className="w-full bg-[#423D96] hover:bg-[#10172E] py-3 mt-6"
+              className="w-full bg-[#423D96] hover:bg-[#10172E] py-3 mt-6 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="flex items-center justify-center gap-2">
-                রেজিস্টার করুন
-                <HugeiconsIcon
-                  icon={ArrowRight02Icon}
-                  size={18}
-                  color="currentColor"
-                  strokeWidth={1.5}
-                />
+                {isSubmitting ? "নিবন্ধন হচ্ছে..." : "রেজিস্টার করুন"}
+                {!isSubmitting && (
+                  <HugeiconsIcon
+                    icon={ArrowRight02Icon}
+                    size={18}
+                    color="currentColor"
+                    strokeWidth={1.5}
+                  />
+                )}
               </span>
             </Button>
 

@@ -11,27 +11,56 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { notify } from "@/utils/notify";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-context";
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, "ইমেইল প্রয়োজন")
+    .email("সঠিক ইমেইল ফরম্যাট দিন (উদাহরণ: name@example.com)"),
+  password: z.string().min(1, "পাসওয়ার্ড প্রয়োজন"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    rememberMe: false,
+  const router = useRouter();
+  const { setSession } = useSession();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
+  const onSubmit = async (data: LoginFormData) => {
+    const res = await authClient.signIn.email(data);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle login logic here
-    console.log("Login data:", formData);
+    const session = await authClient.getSession();
+
+    if (res.data) {
+      setSession(session?.data);
+
+      const user = res?.data?.user;
+      notify.success("Login to successful!");
+
+      router.push("/admin-dashboard");
+    } else {
+      notify.error(res?.error?.message as string);
+    }
   };
 
   return (
@@ -57,11 +86,11 @@ export default function LoginPage() {
 
         {/* Login Form */}
         <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Email Field */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
-                ইমেল / ফোন নম্বর
+                ইমেল / ফোন নম্বর <span className="text-[#F8F329]">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -74,20 +103,27 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
                   placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-3 bg-[#1a2332] border border-gray-700 rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors"
-                  required
+                  className={`w-full pl-10 pr-4 py-3 bg-[#1a2332] border rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors ${
+                    errors.email
+                      ? "border-red-500 focus:border-red-500"
+                      : "border-gray-700"
+                  }`}
+                  {...register("email")}
+                  aria-invalid={errors.email ? "true" : "false"}
                 />
               </div>
+              {errors.email && (
+                <p className="text-red-400 text-xs mt-1" role="alert">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             {/* Password Field */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
-                পাসওয়ার্ড
+                পাসওয়ার্ড <span className="text-[#F8F329]">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -100,17 +136,20 @@ export default function LoginPage() {
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-3 bg-[#1a2332] border border-gray-700 rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors"
-                  required
+                  className={`w-full pl-10 pr-12 py-3 bg-[#1a2332] border rounded-xl focus:outline-none focus:border-[#F8F329] text-white placeholder-gray-500 transition-colors ${
+                    errors.password
+                      ? "border-red-500 focus:border-red-500"
+                      : "border-gray-700"
+                  }`}
+                  {...register("password")}
+                  aria-invalid={errors.password ? "true" : "false"}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   <HugeiconsIcon
                     icon={showPassword ? EyeIcon : ViewOffIcon}
@@ -120,22 +159,30 @@ export default function LoginPage() {
                   />
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-red-400 text-xs mt-1" role="alert">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             {/* Login Button */}
             <Button
               type="submit"
+              disabled={isSubmitting}
               variant="primary"
-              className="w-full bg-[#423D96] hover:bg-[#10172E] py-3"
+              className="w-full bg-[#423D96] hover:bg-[#10172E] py-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="flex items-center justify-center gap-2">
-                লগইন করুন
-                <HugeiconsIcon
-                  icon={ArrowRight02Icon}
-                  size={18}
-                  color="currentColor"
-                  strokeWidth={1.5}
-                />
+                {isSubmitting ? "লগইন হচ্ছে..." : "লগইন করুন"}
+                {!isSubmitting && (
+                  <HugeiconsIcon
+                    icon={ArrowRight02Icon}
+                    size={18}
+                    color="currentColor"
+                    strokeWidth={1.5}
+                  />
+                )}
               </span>
             </Button>
 

@@ -14,8 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-// import useLogout from "@/hooks/useLogout";
-// import { useSession } from "@/lib/auth-context";
+import useLogout from "@/hooks/useLogout";
 import {
   Avatar,
   AvatarFallback,
@@ -35,17 +34,11 @@ export function DashboardSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
-  const { data, isLoading, isError, refetch } = useFetch("/profile");
+  const { data, isLoading } = useFetch("/profile");
 
   const profileData: IProfile = data?.data || {};
 
-  console.log(profileData);
-
-  // const { session } = useSession();
-
-  // const user = session?.user;
-
-  // const { handleLogout } = useLogout();
+  const { handleLogout } = useLogout();
 
   return (
     <Sidebar
@@ -173,7 +166,7 @@ export function DashboardSidebar() {
           
           {!isCollapsed && (
             <button
-              // onClick={handleLogout}
+              onClick={handleLogout}
               className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             >
               <HugeiconsIcon

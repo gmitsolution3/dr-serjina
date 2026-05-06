@@ -3,6 +3,7 @@ import { DashboardMenu } from "@/utils/dashboardMenu";
 import {
   Calendar02Icon,
   Layout01Icon,
+  Settings01Icon,
   TickDouble02Icon,
   TreatmentIcon,
   UserCircleIcon,
@@ -40,5 +41,9 @@ export const settingsItems = [
     url: dashboardMenu.defineUrl("/profile"),
     icon: UserCircleIcon,
   },
-  // { title: "Settings", url: "/settings", icon: Settings01Icon },
+  {
+    title: "Settings",
+    url: dashboardMenu.defineUrl("/settings"),
+    icon: Settings01Icon,
+  },
 ];

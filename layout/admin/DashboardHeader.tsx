@@ -17,28 +17,22 @@ import {
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFetch } from "@/hooks/swr/useFetch";
-// import useLogout from "@/hooks/useLogout";
-// import { useSession } from "@/lib/auth-context";
+import useLogout from "@/hooks/useLogout";
+import { IProfile } from "@/types";
+import { getUserNameInitials } from "@/utils";
 import { Menu01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link";
 import { useState } from "react";
-import { IProfile } from "@/types"; 
-import { getUserNameInitials } from "@/utils";
 
 export function DashboardHeader() {
   const [isDark, setIsDark] = useState(false);
 
-  const { data, isLoading, isError, refetch } = useFetch(
-      "/profile",
-    );
+  const { data, isLoading } = useFetch("/profile");
 
   const profileData: IProfile = data?.data || {};
 
-  // const { session } = useSession();
-
-  // const user = session?.user;
-
-  // const { handleLogout } = useLogout();
+  const { handleLogout } = useLogout();
 
   return (
     <header className="sticky top-0 z-50 flex h-19.5 items-center justify-between border-b border-border bg-card px-4 lg:px-6">
@@ -67,7 +61,9 @@ export function DashboardHeader() {
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={profileData?.profileImage} />
                   <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                    {getUserNameInitials(profileData?.name?.english || "")}
+                    {getUserNameInitials(
+                      profileData?.name?.english || "",
+                    )}
                   </AvatarFallback>
                 </Avatar>
               )}
@@ -76,12 +72,15 @@ export function DashboardHeader() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Help & Support</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href="/admin-dashboard/profile">Profile</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href="/admin-dashboard/settings">Settings</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              // onClick={handleLogout}
+              onClick={handleLogout}
               className="text-destructive"
             >
               Sign out
