@@ -292,9 +292,9 @@ export default function Header() {
               variant="primary"
               className="bg-primary hover:bg-[#10172E]"
             >
-              <a href="https://forms.gle/STorhY5dkm5qKefP7" target="_blank">
+              <Link href="/appointment-booking">
                 অ্যাপয়েন্টমেন্ট বুক করুন
-              </a>
+              </Link>
             </Button>
           </div>
         </div>
@@ -455,9 +455,9 @@ export default function Header() {
                 variant="primary"
                 className="bg-primary hover:bg-[#10172E] w-full"
               >
-                <a href="https://forms.gle/STorhY5dkm5qKefP7" target="_blank">
-                  অ্যাপয়েন্টমেন্ট বুক করুন
-                </a>
+                <Link href="/appointment-booking">
+                অ্যাপয়েন্টমেন্ট বুক করুন
+              </Link>
               </Button>
             </div>
           </nav>

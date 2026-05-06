@@ -2,13 +2,16 @@ import { getProfileData } from "@/services/getProfileData";
 import { IProfile } from "@/types";
 import { CallAddIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link";
 
 export default async function CallToAction() {
   const res = await getProfileData();
 
   const profileData: IProfile = res?.data || {};
 
-  const primaryNumber = profileData.contactNumbers.find(number => number.isPrimary);
+  const primaryNumber = profileData.contactNumbers.find(
+    (number) => number.isPrimary,
+  );
 
   return (
     <section
@@ -54,14 +57,13 @@ export default async function CallToAction() {
               </div>
 
               {/* Appointment Button */}
-              <a
-                href="https://forms.gle/hRaBxfPtMFmPVXuW8"
-                target="_blank"
+              <Link
+                href="/appointment-booking"
                 className="flex items-center justify-center gap-2 flex-1 lg:flex-initial font-bold text-sm md:text-base text-gray-900 rounded-tr-2xl py-3 md:py-4 px-4 md:px-6 lg:px-8 hover:bg-[#e6e024] transition-colors"
                 style={{ backgroundColor: "#F8F329" }}
               >
                 অ্যাপয়েন্টমেন্ট বুক করুন
-              </a>
+              </Link>
             </div>
           </div>
         </div>

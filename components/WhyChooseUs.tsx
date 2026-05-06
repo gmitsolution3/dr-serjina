@@ -10,6 +10,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function WhyChooseUs() {
   return (
@@ -40,12 +41,11 @@ export default function WhyChooseUs() {
                 variant="primary"
                 className="bg-primary hover:bg-[#10172E]"
               >
-                <a
-                  href="https://forms.gle/hRaBxfPtMFmPVXuW8"
-                  target="_blank"
+                <Link
+                  href="/appointment-booking"
                 >
                   অ্যাপয়েন্টমেন্ট বুক করুন
-                </a>
+                </Link>
               </Button>
             </div>
           </div>
