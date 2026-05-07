@@ -1,37 +1,9 @@
 "use client";
 
-import type { ChangeEvent } from "react";
-import { useState } from "react";
+import Link from "next/link";
 import { Button } from "./ui/button";
 
-interface IFormData {
-  name: string;
-  phoneNumber: string;
-  location: string;
-  address: string;
-}
-
 export default function AppointmentBook() {
-  const [formData, setFormData] = useState<IFormData>({
-    name: "",
-    phoneNumber: "",
-    location: "",
-    address: "",
-  });
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-  };
-
   return (
     <div
       id="book-appointment"
@@ -58,78 +30,16 @@ export default function AppointmentBook() {
             </div>
           </div>
 
-          {/* Right side - Form */}
-          <div className="bg-white rounded-lg shadow-xl p-6 md:p-8">
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-4 md:space-y-6"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Name Field */}
-                <div>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="আপনার নাম"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285f4] focus:border-transparent text-sm md:text-base"
-                  />
-                </div>
-
-                {/* Phone Number Field */}
-                <div>
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    placeholder="ফোন নাম্বার"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285f4] focus:border-transparent text-sm md:text-base"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Location Select Field */}
-                <div>
-                  <select
-                    name="location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285f4] focus:border-transparent text-gray-700 text-sm md:text-base"
-                  >
-                    <option value="">সিলেক্ট লোকেশন</option>
-                    <option value="dhaka">ঢাকা</option>
-                    <option value="chittagong">চট্টগ্রাম</option>
-                    <option value="sylhet">সিলেট</option>
-                    <option value="rajshahi">রাজশাহী</option>
-                    <option value="khulna">খুলনা</option>
-                  </select>
-                </div>
-
-                {/* Address Field */}
-                <div>
-                  <input
-                    type="text"
-                    name="address"
-                    placeholder="ঠিকানা"
-                    value={formData.address}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4285f4] focus:border-transparent text-sm md:text-base"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-center pt-2 md:pt-4">
-                <Button
-                  variant="primary"
-                  className="bg-[#4285f4] hover:bg-[#10172E]"
-                >
-                  সাবমিট করুন
-                </Button>
-              </div>
-            </form>
+          {/* Right side - Link Button */}
+          <div className="bg-white rounded-lg shadow-xl p-6 md:p-8 flex justify-center items-center">
+            <Link href="/appointment-booking" className="w-full flex justify-center">
+              <Button
+                variant="primary"
+                className="bg-[#4285f4] hover:bg-[#10172E] w-full md:w-auto min-w-[200px]"
+              >
+                অ্যাপয়েন্টমেন্ট বুক করুন
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
