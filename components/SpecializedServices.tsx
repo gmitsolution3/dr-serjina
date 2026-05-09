@@ -6,8 +6,6 @@ export default async function SpecializedServices() {
 
   const serviceList = res?.data?.serviceList || [];
 
-  console.log(serviceList);
-
   // If no services, show empty state
   if (serviceList.length === 0) {
     return (

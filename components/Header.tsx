@@ -96,8 +96,6 @@ export default function Header() {
 
   const profileData: IProfile = data?.data || {};
 
-  console.log(profileData);
-
   // Render location content
   const renderLocationContent = () => {
     if (isLoading) {
@@ -234,7 +232,7 @@ export default function Header() {
                 width={500}
                 src="/logo.png"
                 alt="Logo"
-                className="w-32"
+                className="w-30"
               />
             </Link>
 
