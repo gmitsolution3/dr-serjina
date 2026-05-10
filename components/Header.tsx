@@ -136,7 +136,7 @@ export default function Header() {
     if (profileData?.contactNumbers?.length) {
       return (
         <p className="text-[#525766] text-sm flex flex-col">
-          {profileData.contactNumbers.slice(0, 3).map((number) => (
+          {profileData.contactNumbers.slice(0, 2).map((number) => (
             <a key={number.number} href={`tel:${number?.number}`}>
               {number?.number}
             </a>

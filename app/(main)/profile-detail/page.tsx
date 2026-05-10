@@ -17,12 +17,21 @@ export default async function ProfileDetail() {
   const chambers = profileData?.chamber || [];
   const qualifications = profileData?.educationalQualification || [];
   const specialTrainings = profileData?.specialTrainings || [];
-  const specializations = profileData?.specializations || [];
-  const treatmentAndExperties = profileData?.treatmentAndExperties || [];
+  const treatmentAndExperties =
+    profileData?.treatmentAndExperties || [];
 
-  // Find specific chambers
-  const kurmitolaChamber = chambers.find((c: any) => c.name === "Kurmitola General Hospital");
-  const yorkChamber = chambers.find((c: any) => c.name === "York Hospital");
+  const chunkSize = 10;
+  const maxColumns = 5;
+
+  const columns = [];
+
+  for (
+    let i = 0;
+    i < treatmentAndExperties.length && columns.length < maxColumns;
+    i += chunkSize
+  ) {
+    columns.push(treatmentAndExperties.slice(i, i + chunkSize));
+  }
 
   return (
     <section className="bg-gray-50 py-12">
@@ -33,7 +42,9 @@ export default async function ProfileDetail() {
           <div className="flex justify-center">
             <img
               src={profileData?.profileImage || "/doctorImage.png"}
-              alt={profileData?.name?.bangla || "ডাঃ শেখ সারজিনা আনোয়ার"}
+              alt={
+                profileData?.name?.bangla || "ডাঃ শেখ সারজিনা আনোয়ার"
+              }
               className="w-64 h-80 object-cover rounded-2xl shadow"
             />
           </div>
@@ -41,19 +52,20 @@ export default async function ProfileDetail() {
           {/* Basic Info */}
           <div className="lg:col-span-2">
             <h1 className="text-3xl font-bold text-gray-800">
-              {profileData?.name?.bangla || "ডাঃ এস. কে. সারজিনা আনোয়ার"}
+              {profileData?.name?.bangla ||
+                "ডাঃ এস. কে. সারজিনা আনোয়ার"}
             </h1>
             <p className="text-lg text-gray-600 mt-1">
               {profileData?.name?.english || "Dr. SK. Serjina Anwar"}
             </p>
 
             <p className="mt-3 text-primary font-medium">
-              {profileData?.specializedIn || "শিশু রোগ বিশেষজ্ঞ ও শিশু নিউরোলজিস্ট"}
+              {profileData?.specializedIn ||
+                "শিশু রোগ বিশেষজ্ঞ ও শিশু নিউরোলজিস্ট"}
             </p>
 
             <div className="mt-4 space-y-2 text-gray-700">
-              {/* Kurmitola Hospital */}
-              {kurmitolaChamber && (
+              {chambers.map((chamber: any) => (
                 <div className="flex items-center gap-2">
                   <HugeiconsIcon
                     icon={Hospital02Icon}
@@ -62,23 +74,11 @@ export default async function ProfileDetail() {
                     className="text-primary"
                   />
                   <span>
-                    {kurmitolaChamber.designation}, {kurmitolaChamber.name}, {kurmitolaChamber.location}
+                    {chamber.designation}, {chamber.name},{" "}
+                    {chamber.location}
                   </span>
                 </div>
-              )}
-
-              {/* York Hospital */}
-              {yorkChamber && (
-                <div className="flex items-center gap-2">
-                  <HugeiconsIcon
-                    icon={Hospital02Icon}
-                    size={20}
-                    strokeWidth={1.5}
-                    className="text-primary"
-                  />
-                  <span>{yorkChamber.designation}, {yorkChamber.name}</span>
-                </div>
-              )}
+              ))}
 
               {/* Phone Numbers */}
               {contactNumbers.length > 0 && (
@@ -143,7 +143,7 @@ export default async function ProfileDetail() {
           </h2>
 
           <p className="text-gray-700 leading-relaxed">
-            {profileData?.longDescription || 
+            {profileData?.longDescription ||
               `ডাঃ শেখ সারজিনা আনোয়ার একজন অভিজ্ঞ শিশু রোগ বিশেষজ্ঞ ও
               শিশু নিউরোলজিস্ট। তিনি শিশুদের জটিল স্নায়বিক ও
               নিউরোডেভেলপমেন্টাল সমস্যার নির্ভুল নির্ণয় ও চিকিৎসায়
@@ -167,9 +167,11 @@ export default async function ProfileDetail() {
             </h2>
 
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
-              {qualifications.map((qualification: string, index: number) => (
-                <li key={index}>{qualification}</li>
-              ))}
+              {qualifications.map(
+                (qualification: string, index: number) => (
+                  <li key={index}>{qualification}</li>
+                ),
+              )}
             </ul>
           </div>
         )}
@@ -188,47 +190,33 @@ export default async function ProfileDetail() {
             </h2>
 
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
-              {specialTrainings.map((training: string, index: number) => (
-                <li key={index}>{training}</li>
-              ))}
+              {specialTrainings.map(
+                (training: string, index: number) => (
+                  <li key={index}>{training}</li>
+                ),
+              )}
             </ul>
           </div>
         )}
 
         {/* Services */}
-        {(specializations.length > 0 || treatmentAndExperties.length > 0) && (
+        {treatmentAndExperties.length > 0 && (
           <div className="mt-10 bg-white rounded-2xl shadow-md p-8">
             <h2 className="text-2xl font-semibold mb-6">
               চিকিৎসা সেবা ও বিশেষ দক্ষতা
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-700">
-              {/* Specializations */}
-              {specializations.length > 0 && (
-                <ul className="list-disc pl-6 space-y-2">
-                  {specializations.map((item: string, index:number) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 text-gray-700">
+              {columns.map((column, columnIndex) => (
+                <ul
+                  key={columnIndex}
+                  className="list-disc pl-6 space-y-2"
+                >
+                  {column.map((item: string, index: number) => (
                     <li key={index}>{item}</li>
                   ))}
                 </ul>
-              )}
-
-              {/* Treatment & Expertises */}
-              {treatmentAndExperties.length > 0 && (
-                <ul className="list-disc pl-6 space-y-2">
-                  {treatmentAndExperties.slice(0, Math.ceil(treatmentAndExperties.length / 2)).map((item: string, index: number) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              )}
-
-              {/* Remaining Treatment & Expertises */}
-              {treatmentAndExperties.length > 0 && (
-                <ul className="list-disc pl-6 space-y-2">
-                  {treatmentAndExperties.slice(Math.ceil(treatmentAndExperties.length / 2)).map((item: string, index: number) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              )}
+              ))}
             </div>
           </div>
         )}

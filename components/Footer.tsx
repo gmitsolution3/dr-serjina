@@ -21,10 +21,6 @@ export default async function Footer() {
   const contactNumbers = profileData?.contactNumbers || [];
   const chambers = profileData?.chamber || [];
 
-  // Find chambers
-  const yorkChamber = chambers.find(c => c.name === "York Hospital");
-  const kurmitolaChamber = chambers.find(c => c.name === "Kurmitola General Hospital");
-
   // Find social links
   const socialLinks = profileData?.socialLinks || [];
 
@@ -36,13 +32,19 @@ export default async function Footer() {
           {/* About Dr. Serjina Anwar */}
           <div className="space-y-6">
             <h4 className="text-yellow-400 text-xl font-bold mb-4">
-              About {profileData?.name?.english || "Dr. Serjina Anwar"}
+              About{" "}
+              {profileData?.name?.english || "Dr. Serjina Anwar"}
             </h4>
             <div className="space-y-3 text-gray-300">
-              <p>{profileData?.name?.english || "Dr. SK. Serjina Anwar"}</p>
-              {profileData?.educationalQualification?.map((qualification, index) => (
-                <p key={index}>{qualification}</p>
-              ))}
+              <p>
+                {profileData?.name?.english ||
+                  "Dr. SK. Serjina Anwar"}
+              </p>
+              {profileData?.educationalQualification
+                ?.slice(0, 5)
+                .map((qualification, index) => (
+                  <p key={index}>{qualification}</p>
+                ))}
             </div>
 
             {/* Social Media Icons */}
@@ -140,8 +142,8 @@ export default async function Footer() {
             </h4>
             <div className="space-y-4 text-gray-300">
               {/* York Hospital Chamber */}
-              {yorkChamber && (
-                <div className="flex gap-3">
+              {chambers.slice(0, 3).map((chamber) => (
+                <div key={chamber.name} className="flex gap-3">
                   <HugeiconsIcon
                     icon={MapPinCheckIcon}
                     size={20}
@@ -150,27 +152,14 @@ export default async function Footer() {
                     className="flex-shrink-0 mt-1"
                   />
                   <p className="leading-relaxed">
-                    {yorkChamber.name} Chamber <br /> {yorkChamber.location} <br />
-                    ({profileData?.chamberTime || "Sat-Mon-Wed, 7:00 PM - 9 PM"})
+                    {chamber.name} Chamber <br /> {chamber.location}{" "}
+                    <br />(
+                    {profileData?.chamberTime ||
+                      "Sat-Mon-Wed, 7:00 PM - 9 PM"}
+                    )
                   </p>
                 </div>
-              )}
-
-              {/* Kurmitola Hospital */}
-              {kurmitolaChamber && (
-                <div className="flex gap-3">
-                  <HugeiconsIcon
-                    icon={MapPinCheckIcon}
-                    size={20}
-                    color="#F8F329"
-                    strokeWidth={1.5}
-                    className="flex-shrink-0 mt-1"
-                  />
-                  <p className="leading-relaxed">
-                    {kurmitolaChamber.name}, {kurmitolaChamber.location}
-                  </p>
-                </div>
-              )}
+              ))}
 
               {/* Phone Numbers */}
               {contactNumbers.length > 0 && (
@@ -182,7 +171,7 @@ export default async function Footer() {
                     strokeWidth={1.5}
                     className="flex-shrink-0"
                   />
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-y-1">
                     {contactNumbers.map((contact) => (
                       <a
                         key={contact.number}
@@ -230,7 +219,7 @@ export default async function Footer() {
                   color="#F8F329"
                   strokeWidth={1.5}
                   className="flex-shrink-0"
-              />
+                />
                 <div>
                   <p className="font-semibold">Appointments:</p>
                   <p>{profileData.appointmentTime}</p>
@@ -283,7 +272,8 @@ export default async function Footer() {
                 rel="noopener noreferrer"
                 className="hover:text-yellow-400 transition-colors"
               >
-                {profileData?.name?.english || "Dr. SK. Serjina Anwar"}
+                {profileData?.name?.english ||
+                  "Dr. SK. Serjina Anwar"}
               </Link>{" "}
               All rights reserved.
             </p>

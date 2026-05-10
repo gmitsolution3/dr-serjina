@@ -2,7 +2,6 @@ import { getProfileData } from "@/services/getProfileData";
 import { IProfile } from "@/types";
 import {
   Calendar01Icon,
-  Clock01Icon,
   File01Icon,
   InjectionIcon,
   LaptopIcon,
@@ -19,8 +18,10 @@ export default async function BookingProcess() {
   const profileData: IProfile = res?.data || {};
 
   // Get primary chamber info
-  const primaryChamber = profileData?.chamber?.find(c => c.isPrimary);
-  
+  const primaryChamber = profileData?.chamber?.find(
+    (c) => c.isPrimary,
+  );
+
   // Get contact numbers
   const contactNumbers = profileData?.contactNumbers || [];
 
@@ -173,24 +174,8 @@ export default async function BookingProcess() {
                       className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                     />
                     <p className="text-sm sm:text-base md:text-lg leading-snug">
-                      {profileData?.chamberTime || "শনি, সোম এবং বুধবার"}
-                    </p>
-                  </div>
-
-                  {/* Time */}
-                  <div
-                    className="flex items-center gap-2 sm:gap-3"
-                    style={{ color: "#A4AEBE" }}
-                  >
-                    <HugeiconsIcon
-                      icon={Clock01Icon}
-                      size={18}
-                      color="#A4AEBE"
-                      strokeWidth={1.5}
-                      className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
-                    />
-                    <p className="text-sm sm:text-base md:text-lg leading-snug">
-                      {profileData.chamberTime}
+                      {profileData?.chamberTime ||
+                        "শনি, সোম এবং বুধবার"}
                     </p>
                   </div>
 
@@ -207,7 +192,9 @@ export default async function BookingProcess() {
                       className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                     />
                     <p className="text-sm sm:text-base md:text-lg leading-snug">
-                      সিরিয়ালঃ {profileData?.appointmentTime || "সকাল ১১টা থেকে রাত ১১ টা"}
+                      সিরিয়ালঃ{" "}
+                      {profileData?.appointmentTime ||
+                        "সকাল ১১টা থেকে রাত ১১ টা"}
                     </p>
                   </div>
 
@@ -224,7 +211,9 @@ export default async function BookingProcess() {
                       className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
                     />
                     <p className="text-sm sm:text-base md:text-lg leading-snug whitespace-pre-line">
-                      অনলাইন কন্সাল্টেন্সিঃ {profileData?.onlineConsultancyTime || "সকাল ১১টা থেকে রাত ১১ টা (শনি - শুক্র)"}
+                      অনলাইন কন্সাল্টেন্সিঃ{" "}
+                      {profileData?.onlineConsultancyTime ||
+                        "সকাল ১১টা থেকে রাত ১১ টা (শনি - শুক্র)"}
                     </p>
                   </div>
                 </div>
@@ -241,7 +230,9 @@ export default async function BookingProcess() {
                     <p className="text-base sm:text-lg font-semibold break-all flex flex-col">
                       {contactNumbers.length > 0 ? (
                         contactNumbers.map((contact) => (
-                          <span key={contact.number}>{contact.number}</span>
+                          <span key={contact.number}>
+                            {contact.number}
+                          </span>
                         ))
                       ) : (
                         <span>০১৩৩৯৫১১১০৮</span>
