@@ -1,10 +1,10 @@
 "use client";
 
 import Editor from "@/components/editor/editor";
+import { ImageUploader } from "@/components/ImageUploader";
 import { Button } from "@/components/ui/button";
 import { notify } from "@/utils/notify";
 import { useState } from "react";
-import { ImageUploader } from "@/components/ImageUploader";
 
 export default function NewBlogPage() {
   const [title, setTitle] = useState("");
@@ -44,7 +44,13 @@ export default function NewBlogPage() {
   const saveAsDraft = () => {
     localStorage.setItem(
       "blog-draft",
-      JSON.stringify({ title, slug, thumbnail, thumbnailPublicId, content }),
+      JSON.stringify({
+        title,
+        slug,
+        thumbnail,
+        thumbnailPublicId,
+        content,
+      }),
     );
 
     notify.success("Saved blog as draft");
@@ -57,15 +63,15 @@ export default function NewBlogPage() {
     setThumbnail("");
     setThumbnailPublicId("");
     setContent({});
-    
+
     notify.success("Removed blog from draft");
   };
 
-  console.log({title});
-  console.log({slug});
-  console.log({content});
-  console.log({thumbnail});
-  console.log({thumbnailPublicId});
+  console.log({ title });
+  console.log({ slug });
+  console.log({ content });
+  console.log({ thumbnail });
+  console.log({ thumbnailPublicId });
 
   return (
     <div>

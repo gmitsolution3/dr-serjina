@@ -90,7 +90,7 @@ export default function Editor({
     content: "",
 
     onUpdate: ({ editor }) => {
-      debouncedContentChange(editor.getJSON().content);
+      debouncedContentChange(editor.getJSON());
     },
 
     immediatelyRender: false,
