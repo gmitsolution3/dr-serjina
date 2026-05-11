@@ -7,6 +7,7 @@ import {
   TickDouble02Icon,
   TreatmentIcon,
   UserCircleIcon,
+  ContentWritingIcon
 } from "@hugeicons/core-free-icons";
 
 const baseDashboardUrl = "/admin-dashboard";
@@ -32,6 +33,11 @@ export const mainMenuItems = [
     title: "Services",
     url: dashboardMenu.defineUrl("/services"),
     icon: TreatmentIcon,
+  },
+  {
+    title: "Blogs",
+    url: dashboardMenu.defineUrl("/blogs"),
+    icon: ContentWritingIcon,
   },
 ];
 

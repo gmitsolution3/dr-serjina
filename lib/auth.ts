@@ -4,9 +4,14 @@ import { getDB } from "./mongodb";
 
 const db = await getDB();
 
-export const auth = betterAuth({
-  database: mongodbAdapter(db),
+const baseURL =
+  process.env.NODE_ENV === "development"
+    ? process.env.NEXT_PUBLIC_AUTH_DEV_BASE_URL
+    : process.env.NEXT_PUBLIC_AUTH_BASE_URL;
 
+export const auth = betterAuth({
+  baseURL,
+  database: mongodbAdapter(db),
   emailAndPassword: {
     enabled: true,
   },

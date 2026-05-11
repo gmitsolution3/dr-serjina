@@ -247,7 +247,8 @@ export default function DashboardPage() {
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <div className="space-y-4">
-                {analyticData?.recentActivities?.map(
+                {analyticData?.recentActivities?.length > 0 ? (
+                  analyticData?.recentActivities?.map(
                   (data: any, index: number) => (
                     <div
                       key={index}
@@ -267,7 +268,8 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   ),
-                )}
+                )
+                ) : <p>No Activities registered yet.</p>}
               </div>
             </div>
           </div>
