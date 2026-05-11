@@ -4,11 +4,13 @@ import Editor from "@/components/editor/editor";
 import { Button } from "@/components/ui/button";
 import { notify } from "@/utils/notify";
 import { useState } from "react";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export default function NewBlogPage() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [thumbnail, setThumbnail] = useState("");
+  const [thumbnailPublicId, setThumbnailPublicId] = useState("");
   const [content, setContent] = useState({});
 
   // Slugify function
@@ -33,10 +35,16 @@ export default function NewBlogPage() {
     setSlug(slugify(newTitle));
   };
 
+  // Handle thumbnail upload
+  const handleThumbnailChange = (url: string, public_id: string) => {
+    setThumbnail(url);
+    setThumbnailPublicId(public_id);
+  };
+
   const saveAsDraft = () => {
     localStorage.setItem(
       "blog-draft",
-      JSON.stringify({ title, slug, thumbnail, content }),
+      JSON.stringify({ title, slug, thumbnail, thumbnailPublicId, content }),
     );
 
     notify.success("Saved blog as draft");
@@ -44,7 +52,12 @@ export default function NewBlogPage() {
 
   const clearDraft = () => {
     localStorage.removeItem("blog-draft");
-
+    setTitle("");
+    setSlug("");
+    setThumbnail("");
+    setThumbnailPublicId("");
+    setContent({});
+    
     notify.success("Removed blog from draft");
   };
 
@@ -52,6 +65,7 @@ export default function NewBlogPage() {
   console.log({slug});
   console.log({content});
   console.log({thumbnail});
+  console.log({thumbnailPublicId});
 
   return (
     <div>
@@ -81,6 +95,18 @@ export default function NewBlogPage() {
             Slug: <span className="font-mono">{slug}</span>
           </div>
         )}
+      </div>
+
+      {/* Thumbnail Upload Section */}
+      <div className="mb-6 space-y-2">
+        <label className="block text-sm font-medium">
+          Thumbnail Image
+        </label>
+        <ImageUploader
+          value={thumbnail}
+          imagePublicId={thumbnailPublicId}
+          onChange={handleThumbnailChange}
+        />
       </div>
 
       <Editor

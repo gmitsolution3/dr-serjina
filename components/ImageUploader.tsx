@@ -9,7 +9,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ImageUploaderProps {
   value?: string;
@@ -25,6 +25,7 @@ export const ImageUploader = ({
   const [preview, setPreview] = useState<string | null>(
     value || null,
   );
+  console.log(preview)
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -90,6 +91,10 @@ export const ImageUploader = ({
     setImagePublicId("");
     onChange("", "");
   };
+
+  useEffect(() => {
+    setPreview(value as string);
+  }, [value]);
 
   return (
     <Card className="w-full p-4 border-dashed border-2 flex flex-col items-center justify-center gap-3">
