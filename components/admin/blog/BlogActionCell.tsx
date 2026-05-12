@@ -38,7 +38,7 @@ export default function BlogActionCell({
     const res = await axiosInstance.patch(`/blog/toggle/${slug}`);
 
     if (res.data.success) {
-      notify.success(res.data.success.message);
+      notify.success(res.data.message);
 
       mutate(
         (key) => {

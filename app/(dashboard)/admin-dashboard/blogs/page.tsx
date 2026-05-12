@@ -55,7 +55,7 @@ export default function BlogPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const { data, isLoading, isError, refetch } = useFetch("/blog", {
+  const { data, isLoading, isError, refetch } = useFetch("/blog/all", {
     params: {
       page: page,
       limit: limit,
