@@ -263,7 +263,7 @@ export default function NewBlogPage() {
                 Content Editor
               </h3>
             
-            <div className={isPreview ? "hidden" : "block"}>
+            <div>
               <Editor
                 onTitleChange={setTitle}
                 onSlugChange={setSlug}
@@ -271,39 +271,6 @@ export default function NewBlogPage() {
                 onContentChange={setContent}
               />
             </div>
-            {isPreview && (
-              <div className="p-6 sm:p-8">
-                <div className="prose prose-slate dark:prose-invert max-w-none">
-                  <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-6">
-                    <h2 className="text-2xl font-bold mb-4">Preview Mode</h2>
-                    <div className="space-y-4">
-                      {title && (
-                        <div>
-                          <h3 className="font-semibold text-slate-700 dark:text-slate-300">Title:</h3>
-                          <p className="text-slate-600 dark:text-slate-400">{title}</p>
-                        </div>
-                      )}
-                      {thumbnail && (
-                        <div>
-                          <h3 className="font-semibold text-slate-700 dark:text-slate-300">Thumbnail:</h3>
-                          <img src={thumbnail} alt="Thumbnail preview" className="mt-2 rounded-lg max-h-48 object-cover" />
-                        </div>
-                      )}
-                      {Object.keys(content).length > 0 && (
-                        <div>
-                          <h3 className="font-semibold text-slate-700 dark:text-slate-300">Content:</h3>
-                          <div className="mt-2 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
-                            <pre className="text-sm overflow-auto">
-                              {JSON.stringify(content, null, 2)}
-                            </pre>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
             </div>
           </div>
         </div>
