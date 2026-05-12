@@ -25,7 +25,6 @@ export const ImageUploader = ({
   const [preview, setPreview] = useState<string | null>(
     value || null,
   );
-  console.log(preview)
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 

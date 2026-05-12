@@ -3,7 +3,15 @@
 import Editor from "@/components/editor/editor";
 import { ImageUploader } from "@/components/ImageUploader";
 import { Button } from "@/components/ui/button";
+import { usePost } from "@/hooks/swr/usePost";
 import { notify } from "@/utils/notify";
+import {
+  Loader2,
+  MessageSquareCheck,
+  Save,
+  Trash,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function NewBlogPage() {
@@ -12,6 +20,13 @@ export default function NewBlogPage() {
   const [thumbnail, setThumbnail] = useState("");
   const [thumbnailPublicId, setThumbnailPublicId] = useState("");
   const [content, setContent] = useState({});
+
+  //todo: change the revalidate key here
+  const { mutate: postBlog, isLoading } = usePost("/blog", {
+    revalidateKey: "/something",
+  });
+
+  const router = useRouter();
 
   // Slugify function
   const slugify = (text: string) => {
@@ -56,7 +71,7 @@ export default function NewBlogPage() {
     notify.success("Saved blog as draft");
   };
 
-  const clearDraft = () => {
+  const clearDraft = (showMsg: boolean) => {
     localStorage.removeItem("blog-draft");
     setTitle("");
     setSlug("");
@@ -64,23 +79,57 @@ export default function NewBlogPage() {
     setThumbnailPublicId("");
     setContent({});
 
-    notify.success("Removed blog from draft");
+    if (showMsg) {
+      notify.success("Removed blog from draft");
+    }
   };
 
-  console.log({ title });
-  console.log({ slug });
-  console.log({ content });
-  console.log({ thumbnail });
-  console.log({ thumbnailPublicId });
+  const publishBlog = async () => {
+    try {
+      const payload = {
+        title,
+        slug,
+        thumbnail,
+        content,
+      };
+
+      const res = await postBlog(payload);
+
+      if (res.success) {
+        console.log("hi");
+        notify.success(res.message);
+
+        clearDraft(false);
+
+        router.push("/admin-dashboard/blogs");
+      }
+    } catch (error: any) {
+      notify.error(error.message);
+    }
+  };
 
   return (
     <div>
       <h3>NewBlogPage</h3>
 
       <div className="flex items-center justify-end gap-5 mb-6">
-        <Button>Publish</Button>
-        <Button onClick={saveAsDraft}>Save as draft</Button>
-        <Button onClick={clearDraft}>clear draft</Button>
+        <Button disabled={isLoading} onClick={publishBlog}>
+          {isLoading ? (
+            <>
+              <Loader2 className="animation-spin" /> Publishing{" "}
+            </>
+          ) : (
+            <>
+              <MessageSquareCheck size={16} /> Publish
+            </>
+          )}
+        </Button>
+        <Button onClick={saveAsDraft}>
+          <Save size={16} /> Save Draft
+        </Button>
+        <Button onClick={() => clearDraft(true)}>
+          <Trash size={16} /> Clear Draft
+        </Button>
       </div>
 
       {/* Title Input Section */}
