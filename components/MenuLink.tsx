@@ -21,7 +21,7 @@ const MenuLink = ({
 
   return (
     <Link
-      href={`#${to}`}
+      href={to}
       className={cn(className, `${pathname === to ? active : ""}`)}
       onClick={onClick}
     >

@@ -350,6 +350,14 @@ export default function Header() {
                     Contact
                   </MenuLink>
                 </li>
+                <li>
+                  <MenuLink
+                    to="/blogs"
+                    className="text-[#423D96] hover:text-primary font-medium transition-colors text-sm"
+                  >
+                    Blogs
+                  </MenuLink>
+                </li>
               </ul>
 
               <div>
