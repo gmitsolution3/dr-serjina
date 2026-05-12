@@ -3,6 +3,7 @@
 import Editor from "@/components/editor/editor";
 import { ImageUploader } from "@/components/ImageUploader";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { usePost } from "@/hooks/swr/usePost";
 import { notify } from "@/utils/notify";
 import {
@@ -10,9 +11,13 @@ import {
   MessageSquareCheck,
   Save,
   Trash,
+  Eye,
+  FileText,
+  Image as ImageIcon,
+  Link as LinkIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function NewBlogPage() {
   const [title, setTitle] = useState("");
@@ -20,6 +25,8 @@ export default function NewBlogPage() {
   const [thumbnail, setThumbnail] = useState("");
   const [thumbnailPublicId, setThumbnailPublicId] = useState("");
   const [content, setContent] = useState({});
+  const [isPreview, setIsPreview] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   //todo: change the revalidate key here
   const { mutate: postBlog, isLoading } = usePost("/blog", {
@@ -27,6 +34,10 @@ export default function NewBlogPage() {
   });
 
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Slugify function
   const slugify = (text: string) => {
@@ -108,68 +119,202 @@ export default function NewBlogPage() {
     }
   };
 
+  const hasContent = title || slug || thumbnail || Object.keys(content).length > 0;
+
   return (
-    <div>
-      <h3>NewBlogPage</h3>
+    <div className="min-h-screen">
+      <div className="px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* Header with actions */}
+        <div className="mb-8 sm:mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-400 bg-clip-text text-transparent">
+                Create New Blog Post
+              </h1>
+              <p className="text-slate-500 dark:text-slate-400 mt-2">
+                Write, edit, and publish your content
+              </p>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3">
+              {isClient && hasContent && (
+                <Button
+                  variant="outline"
+                  onClick={() => setIsPreview(!isPreview)}
+                  className="gap-2"
+                >
+                  <Eye size={16} />
+                  {isPreview ? "Edit" : "Preview"}
+                </Button>
+              )}
+              <Button
+                disabled={isLoading}
+                onClick={publishBlog}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="animate-spin" size={16} />
+                    Publishing...
+                  </>
+                ) : (
+                  <>
+                    <MessageSquareCheck size={16} />
+                    Publish
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={saveAsDraft}
+                className="gap-2"
+              >
+                <Save size={16} />
+                Save Draft
+              </Button>
+              <Button
+                onClick={() => clearDraft(true)}
+                className="gap-2"
+              >
+                <Trash size={16} />
+                Clear Draft
+              </Button>
+            </div>
+          </div>
 
-      <div className="flex items-center justify-end gap-5 mb-6">
-        <Button disabled={isLoading} onClick={publishBlog}>
-          {isLoading ? (
-            <>
-              <Loader2 className="animation-spin" /> Publishing{" "}
-            </>
-          ) : (
-            <>
-              <MessageSquareCheck size={16} /> Publish
-            </>
+          {/* Progress indicator */}
+          {isClient && hasContent && (
+            <div className="flex flex-wrap gap-4 text-sm text-slate-500 dark:text-slate-400">
+              {title && (
+                <span className="flex items-center gap-1">
+                  <FileText size={14} /> Title set
+                </span>
+              )}
+              {thumbnail && (
+                <span className="flex items-center gap-1">
+                  <ImageIcon size={14} /> Thumbnail added
+                </span>
+              )}
+              {slug && (
+                <span className="flex items-center gap-1">
+                  <LinkIcon size={14} /> Slug ready
+                </span>
+              )}
+            </div>
           )}
-        </Button>
-        <Button onClick={saveAsDraft}>
-          <Save size={16} /> Save Draft
-        </Button>
-        <Button onClick={() => clearDraft(true)}>
-          <Trash size={16} /> Clear Draft
-        </Button>
-      </div>
+        </div>
 
-      {/* Title Input Section */}
-      <div className="mb-6 space-y-2">
-        <label htmlFor="title" className="block text-sm font-medium">
-          Title
-        </label>
-        <input
-          id="title"
-          type="text"
-          value={title}
-          onChange={handleTitleChange}
-          placeholder="Enter blog title..."
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-        {slug && (
-          <div className="text-sm text-gray-500">
-            Slug: <span className="font-mono">{slug}</span>
+        {/* Main Content Area */}
+        <div className="space-y-8">
+          {/* Title Input Section */}
+          <div>
+            <div className="space-y-4">
+              <label
+                htmlFor="title"
+                className="block text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide"
+              >
+                Blog Title
+              </label>
+              <Input
+                id="title"
+                type="text"
+                value={title}
+                onChange={handleTitleChange}
+                placeholder="Enter an engaging title..."
+                className="!text-lg font-medium p-6"
+              />
+              {slug && (
+                <div className="flex items-center gap-2 text-sm bg-slate-50 dark:bg-slate-800 px-4 py-3 rounded-lg">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                    Permalink:
+                  </span>
+                  <span className="font-mono text-emerald-600 dark:text-emerald-400">
+                    /blog/{slug}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Thumbnail Upload Section */}
+          <div>
+            <div className="space-y-4">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
+                Thumbnail Image
+              </label>
+              <div className="">
+                <ImageUploader
+                  value={thumbnail}
+                  imagePublicId={thumbnailPublicId}
+                  onChange={handleThumbnailChange}
+                />
+              </div>
+              {thumbnail && (
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  ✓ Thumbnail uploaded successfully
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Editor Section */}
+          <div >
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
+                Content Editor
+              </h3>
+            
+            <div className={isPreview ? "hidden" : "block"}>
+              <Editor
+                onTitleChange={setTitle}
+                onSlugChange={setSlug}
+                onThumbnailChange={setThumbnail}
+                onContentChange={setContent}
+              />
+            </div>
+            {isPreview && (
+              <div className="p-6 sm:p-8">
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-6">
+                    <h2 className="text-2xl font-bold mb-4">Preview Mode</h2>
+                    <div className="space-y-4">
+                      {title && (
+                        <div>
+                          <h3 className="font-semibold text-slate-700 dark:text-slate-300">Title:</h3>
+                          <p className="text-slate-600 dark:text-slate-400">{title}</p>
+                        </div>
+                      )}
+                      {thumbnail && (
+                        <div>
+                          <h3 className="font-semibold text-slate-700 dark:text-slate-300">Thumbnail:</h3>
+                          <img src={thumbnail} alt="Thumbnail preview" className="mt-2 rounded-lg max-h-48 object-cover" />
+                        </div>
+                      )}
+                      {Object.keys(content).length > 0 && (
+                        <div>
+                          <h3 className="font-semibold text-slate-700 dark:text-slate-300">Content:</h3>
+                          <div className="mt-2 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <pre className="text-sm overflow-auto">
+                              {JSON.stringify(content, null, 2)}
+                            </pre>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            </div>
+          </div>
+        </div>
+
+        {/* Draft Info Banner */}
+        {isClient && (
+          <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-500">
+            <p>Your draft is automatically saved in your browser's local storage</p>
           </div>
         )}
       </div>
-
-      {/* Thumbnail Upload Section */}
-      <div className="mb-6 space-y-2">
-        <label className="block text-sm font-medium">
-          Thumbnail Image
-        </label>
-        <ImageUploader
-          value={thumbnail}
-          imagePublicId={thumbnailPublicId}
-          onChange={handleThumbnailChange}
-        />
-      </div>
-
-      <Editor
-        onTitleChange={setTitle}
-        onSlugChange={setSlug}
-        onThumbnailChange={setThumbnail}
-        onContentChange={setContent}
-      />
     </div>
   );
 }
