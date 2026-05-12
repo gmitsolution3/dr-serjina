@@ -45,9 +45,9 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 
 export default function BlogPage() {
   const [page, setPage] = useState(1);
@@ -55,17 +55,14 @@ export default function BlogPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const { data, isLoading, isError, refetch } = useFetch(
-    "/blog",
-    {
-      params: {
-        page: page,
-        limit: limit,
-        sortBy: "createdAt",
-        sortOrder: "desc",
-      },
+  const { data, isLoading, isError, refetch } = useFetch("/blog", {
+    params: {
+      page: page,
+      limit: limit,
+      sortBy: "createdAt",
+      sortOrder: "desc",
     },
-  );
+  });
 
   const blogList: IBlog[] = data?.data?.blogList || [];
   const meta: IMeta = data?.data?.meta || {
@@ -82,9 +79,7 @@ export default function BlogPage() {
   const filteredBlogs = useMemo(
     () =>
       blogList.filter((blog) =>
-        blog.title
-          .toLowerCase()
-          .includes(globalFilter.toLowerCase()),
+        blog.title.toLowerCase().includes(globalFilter.toLowerCase()),
       ),
     [blogList, globalFilter],
   );
@@ -106,7 +101,9 @@ export default function BlogPage() {
               />
             ) : (
               <div className="w-full h-full bg-muted flex items-center justify-center">
-                <span className="text-xs text-muted-foreground">No img</span>
+                <span className="text-xs text-muted-foreground">
+                  No img
+                </span>
               </div>
             )}
           </div>
@@ -155,11 +152,13 @@ export default function BlogPage() {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <span className={`capitalize px-2 py-1 rounded-full text-xs font-medium ${
-            status === "published" 
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-          }`}>
+          <span
+            className={`capitalize px-2 py-1 rounded-full text-xs font-medium ${
+              status === "published"
+                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+            }`}
+          >
             {status}
           </span>
         );
@@ -196,7 +195,10 @@ export default function BlogPage() {
           </Button>
         );
       },
-      cell: ({ row }) => row.original.publishedAt ? formatDate(row.original.publishedAt) : "-",
+      cell: ({ row }) =>
+        row.original.publishedAt
+          ? formatDate(row.original.publishedAt)
+          : "-",
     },
     {
       accessorKey: "createdAt",
@@ -234,9 +236,7 @@ export default function BlogPage() {
     {
       id: "actions",
       header: "Actions",
-      cell: ({ row }) => (
-        <BlogActionCell blog={row.original} />
-      ),
+      cell: ({ row }) => <BlogActionCell blog={row.original} />,
     },
   ];
 
@@ -270,11 +270,7 @@ export default function BlogPage() {
 
   // Empty state
   if (blogList.length === 0) {
-    return (
-      <BlogEmpty
-        refetch={refetch}
-      />
-    );
+    return <BlogEmpty refetch={refetch} />;
   }
 
   return (
@@ -299,20 +295,11 @@ export default function BlogPage() {
                   />
                   Refresh
                 </Button>
-                <Button asChild className="gap-2">
-                  <Link href="/admin-dashboard/blogs/new">
-                    <HugeiconsIcon
-                      icon={PlusSignIcon}
-                      className="h-4 w-4"
-                    />
-                    Write New Blog
-                  </Link>
-                </Button>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            {/* Search Row */}
+            {/* Search and Create Button Row */}
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="flex-1">
                 <Input
@@ -322,6 +309,15 @@ export default function BlogPage() {
                   className="w-full p-5"
                 />
               </div>
+              <Button asChild className="gap-2 p-5">
+                <Link href="/admin-dashboard/blogs/new">
+                  <HugeiconsIcon
+                    icon={PlusSignIcon}
+                    className="h-4 w-4"
+                  />
+                  Write New Blog
+                </Link>
+              </Button>
             </div>
 
             {/* Desktop Table View - Hidden on mobile */}
@@ -418,11 +414,13 @@ export default function BlogPage() {
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                           Status:
                         </span>
-                        <span className={`capitalize px-2 py-1 rounded-full text-xs font-medium ${
-                          blog.status === "published" 
-                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                            : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-                        }`}>
+                        <span
+                          className={`capitalize px-2 py-1 rounded-full text-xs font-medium ${
+                            blog.status === "published"
+                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                              : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                          }`}
+                        >
                           {blog.status}
                         </span>
                       </div>
@@ -433,7 +431,9 @@ export default function BlogPage() {
                           Published Date:
                         </span>
                         <span className="text-sm text-gray-900 dark:text-white">
-                          {blog.publishedAt ? formatDate(blog.publishedAt) : "-"}
+                          {blog.publishedAt
+                            ? formatDate(blog.publishedAt)
+                            : "-"}
                         </span>
                       </div>
 
