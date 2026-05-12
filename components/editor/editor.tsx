@@ -12,7 +12,7 @@ import StarterKit from "@tiptap/starter-kit";
 import ResizeImage from "tiptap-extension-resize-image";
 
 import debounce from "lodash.debounce";
-import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
 import Toolbar from "./toolbar";
 
 export default function Editor({
@@ -20,12 +20,18 @@ export default function Editor({
   onSlugChange,
   onThumbnailChange,
   onContentChange,
+  initialContent,
+  isEditMode = false,
 }: {
   onTitleChange: Dispatch<SetStateAction<string>>;
   onSlugChange: Dispatch<SetStateAction<string>>;
   onThumbnailChange: Dispatch<SetStateAction<string>>;
   onContentChange: Dispatch<SetStateAction<{}>>;
+  initialContent?: any;
+  isEditMode?: boolean;
 }) {
+  const hasSetInitialContent = useRef(false);
+
   const debouncedContentChange = useMemo(
     () =>
       debounce((content) => {
@@ -96,8 +102,18 @@ export default function Editor({
     immediatelyRender: false,
   });
 
-  //? retrive saved draft from localdb
+  // Set initial content for edit mode
   useEffect(() => {
+    if (editor && initialContent && isEditMode && !hasSetInitialContent.current) {
+      editor.commands.setContent(initialContent);
+      hasSetInitialContent.current = true;
+    }
+  }, [editor, initialContent, isEditMode]);
+
+  // Retrieve saved draft from local storage (only for create mode)
+  useEffect(() => {
+    if (isEditMode) return; // Skip draft loading for edit mode
+    
     const savedDraft = localStorage.getItem("blog-draft");
 
     if (!savedDraft) return;
@@ -105,15 +121,12 @@ export default function Editor({
     const parsedDraft = JSON.parse(savedDraft);
 
     onTitleChange(parsedDraft.title || "");
-
     onThumbnailChange(parsedDraft.thumbnail || "");
-
-    onSlugChange(parsedDraft.slug)
-
-    onContentChange(parsedDraft.content)
+    onSlugChange(parsedDraft.slug);
+    onContentChange(parsedDraft.content);
 
     editor?.commands.setContent(parsedDraft.content || "");
-  }, [editor]);
+  }, [editor, isEditMode]);
 
   if (!editor) return null;
 

@@ -4,32 +4,53 @@ import Editor from "@/components/editor/editor";
 import { ImageUploader } from "@/components/ImageUploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { usePost } from "@/hooks/swr/usePost";
+import { useFetchById } from "@/hooks/swr/useFetchById";
+import { usePatch } from "@/hooks/swr/usePatch";
 import { notify } from "@/utils/notify";
 import {
-  Eye,
   FileText,
   Image as ImageIcon,
   Link as LinkIcon,
   Loader2,
   MessageSquareCheck,
-  Save,
-  Trash,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { mutate } from "swr";
 
-export default function NewBlogPage() {
+export default function EditBlogPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [thumbnailPublicId, setThumbnailPublicId] = useState("");
   const [content, setContent] = useState({});
-  const [isPreview, setIsPreview] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
-  const { mutate: postBlog, isLoading } = usePost("/blog");
+  const { slug: blogSlug } = use(params);
+
+  const { data, isLoading: isBlogDetailLoading } = useFetchById(
+    "/blog",
+    blogSlug,
+  );
+
+  const { mutate: updateBlog, isLoading: isUpdating } =
+    usePatch("/blog");
+
+  const blogDetail = data?.data || {};
+
+  // Prefill data when blogDetail is loaded
+  useEffect(() => {
+    if (blogDetail && Object.keys(blogDetail).length > 0) {
+      setTitle(blogDetail.title || "");
+      setSlug(blogDetail.slug || "");
+      setThumbnail(blogDetail.thumbnail || "");
+      setContent(blogDetail.content || {});
+    }
+  }, [blogDetail]);
 
   const router = useRouter();
 
@@ -65,35 +86,7 @@ export default function NewBlogPage() {
     setThumbnailPublicId(public_id);
   };
 
-  const saveAsDraft = () => {
-    localStorage.setItem(
-      "blog-draft",
-      JSON.stringify({
-        title,
-        slug,
-        thumbnail,
-        thumbnailPublicId,
-        content,
-      }),
-    );
-
-    notify.success("Saved blog as draft");
-  };
-
-  const clearDraft = (showMsg: boolean) => {
-    localStorage.removeItem("blog-draft");
-    setTitle("");
-    setSlug("");
-    setThumbnail("");
-    setThumbnailPublicId("");
-    setContent({});
-
-    if (showMsg) {
-      notify.success("Removed blog from draft");
-    }
-  };
-
-  const publishBlog = async () => {
+  const onUpdateBlog = async () => {
     try {
       const payload = {
         title,
@@ -102,7 +95,10 @@ export default function NewBlogPage() {
         content,
       };
 
-      const res = await postBlog(payload);
+      const res = await updateBlog({
+        id: blogSlug,
+        data: payload,
+      });
 
       if (res.success) {
         notify.success(res.message);
@@ -115,13 +111,14 @@ export default function NewBlogPage() {
                 key[0].startsWith("/blog")
               );
             }
-            return typeof key === "string" && key.startsWith("/blog");
+            return (
+              typeof key === "string" &&
+              key.startsWith("/blog")
+            );
           },
           undefined,
           { revalidate: true },
         );
-
-        clearDraft(false);
 
         router.push("/admin-dashboard/blogs");
       }
@@ -133,6 +130,14 @@ export default function NewBlogPage() {
   const hasContent =
     title || slug || thumbnail || Object.keys(content).length > 0;
 
+  if (isBlogDetailLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin" size={32} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <div className="px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -141,7 +146,7 @@ export default function NewBlogPage() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-400 bg-clip-text text-transparent">
-                Create New Blog Post
+                Edit Blog Post
               </h1>
               <p className="text-slate-500 dark:text-slate-400 mt-2">
                 Write, edit, and publish your content
@@ -150,39 +155,18 @@ export default function NewBlogPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3">
-              {isClient && hasContent && (
-                <Button
-                  variant="outline"
-                  onClick={() => setIsPreview(!isPreview)}
-                  className="gap-2"
-                >
-                  <Eye size={16} />
-                  {isPreview ? "Edit" : "Preview"}
-                </Button>
-              )}
-              <Button disabled={isLoading} onClick={publishBlog}>
-                {isLoading ? (
+              <Button disabled={isUpdating} onClick={onUpdateBlog}>
+                {isUpdating ? (
                   <>
                     <Loader2 className="animate-spin" size={16} />
-                    Publishing...
+                    Updating...
                   </>
                 ) : (
                   <>
                     <MessageSquareCheck size={16} />
-                    Publish
+                    Update
                   </>
                 )}
-              </Button>
-              <Button onClick={saveAsDraft} className="gap-2">
-                <Save size={16} />
-                Save Draft
-              </Button>
-              <Button
-                onClick={() => clearDraft(true)}
-                className="gap-2"
-              >
-                <Trash size={16} />
-                Clear Draft
               </Button>
             </div>
           </div>
@@ -275,6 +259,8 @@ export default function NewBlogPage() {
                   onSlugChange={setSlug}
                   onThumbnailChange={setThumbnail}
                   onContentChange={setContent}
+                  initialContent={blogDetail.content}
+                  isEditMode={true}
                 />
               </div>
             </div>

@@ -53,7 +53,7 @@ export default function BlogActionCell({
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href={`/admin-dashboard/blogs/edit/${blog._id}`}>
+            <Link href={`/admin-dashboard/blogs/edit/${blog.slug}`}>
               <HugeiconsIcon
                 icon={EditIcon}
                 className="mr-2 h-4 w-4"

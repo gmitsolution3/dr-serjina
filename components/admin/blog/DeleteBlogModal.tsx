@@ -30,7 +30,7 @@ export default function DeleteBlogModal({
 
   const handleDelete = async (blog: IBlog) => {
     try {
-      const res = await deleteBlog(blog._id);
+      const res = await deleteBlog(blog.slug);
 
       if (res?.success) {
         notify.success("Blog deleted successfully");
